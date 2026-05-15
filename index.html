@@ -7,487 +7,245 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════════════════════════
-   VARIABLES + RESET
-   ══════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:       #ffffff;
-  --surface:  #f6f6f6;
-  --border:   #e4e4e4;
-  --text:     #000000;
-  --muted:    #999999;
-  --accent:   #000000;
-  --nav-bg:   rgba(255,255,255,0.96);
-  --nav-border: #e4e4e4;
-  --card-bg:  #f9f9f9;
-
-  --f-title:  'Inter', sans-serif;
-  --w-title:  500;   /* Medium */
-  --w-body:   300;   /* Light  */
-  --w-comment:300;
-  --sz-title: 15px;
-  --sz-body:  13px;
-  --sz-label: 10px;
-  --sz-num:   10px;
+  --bg:#ffffff; --surface:#f6f6f6; --border:#e4e4e4;
+  --text:#000000; --muted:#999; --accent:#000;
+  --nav-bg:rgba(255,255,255,0.96); --nav-border:#e4e4e4; --card-bg:#f9f9f9;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--f-title);
-  font-weight: var(--w-body);
-  font-size: var(--sz-body);
-  transition: background 0.7s ease, color 0.5s ease;
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', sans-serif; font-weight: 300; font-size: 13px;
+  transition: background 0.8s ease, color 0.6s ease;
   min-height: 100vh;
 }
 
-/* ── THEMES ────────────────────────────────────────────── */
+/* ── THEMES ── */
+body.t-bw      { --bg:#fff; --surface:#f6f6f6; --border:#e4e4e4; --text:#000; --muted:#999; --accent:#000; --nav-bg:rgba(255,255,255,0.96); --nav-border:#e4e4e4; --card-bg:#f9f9f9; }
+body.t-noir    { --bg:#000; --surface:#0a0a0a; --border:#1c1c1c; --text:#ffffff; --muted:#555; --accent:#c0392b; --nav-bg:rgba(0,0,0,0.96); --nav-border:#1c1c1c; --card-bg:#0a0a0a; }
+body.t-hk1     { --bg:#020702; --surface:#040d04; --border:#0a160a; --text:#88bb88; --muted:#336633; --accent:#449944; --nav-bg:rgba(2,7,2,0.96); --nav-border:#0a160a; --card-bg:#040d04; }
+body.t-hk2     { --bg:#040c04; --surface:#071207; --border:#0f220f; --text:#bbeeaa; --muted:#447744; --accent:#22cc22; --nav-bg:rgba(4,12,4,0.96); --nav-border:#0f220f; --card-bg:#071207; }
+body.t-hk3     { --bg:#050a05; --surface:#0a120a; --border:#1a2a1a; --text:#00ff41; --muted:#2a6a2a; --accent:#00ff41; --nav-bg:rgba(5,10,5,0.96); --nav-border:#1a2a1a; --card-bg:#0a140a; }
+body.t-trippy  { --bg:#060104; --surface:#120308; --border:#2a0a18; --text:#ffaa44; --muted:#884422; --accent:#ff6600; --nav-bg:rgba(6,1,4,0.96); --nav-border:#2a0a18; --card-bg:#0e0206; }
+body.t-beige   { --bg:#f5ede0; --surface:#ece0d0; --border:#d4c0a8; --text:#2a1008; --muted:#9a7060; --accent:#c0392b; --nav-bg:rgba(245,237,224,0.96); --nav-border:#d4c0a8; --card-bg:#ede2d2; }
+body.t-jero    { --bg:#080806; --surface:#100e08; --border:#28240e; --text:#e8d8b0; --muted:#686040; --accent:#a89060; --nav-bg:rgba(8,8,6,0.96); --nav-border:#28240e; --card-bg:#100e08; }
 
-body.t-bw {
-  --bg: #ffffff; --surface: #f6f6f6; --border: #e4e4e4;
-  --text: #000; --muted: #999; --accent: #000;
-  --nav-bg: rgba(255,255,255,0.96); --nav-border: #e4e4e4; --card-bg: #f9f9f9;
-}
-
-body.t-maps {
-  --bg: #ffffff; --surface: #faf5f5; --border: #f0dede;
-  --text: #111; --muted: #b08888; --accent: #c0392b;
-  --nav-bg: rgba(255,255,255,0.96); --nav-border: #f0dede; --card-bg: #fdf8f8;
-}
-
-body.t-hacker {
-  --bg: #050a05; --surface: #0a120a; --border: #1a2a1a;
-  --text: #00ff41; --muted: #2a6a2a; --accent: #00ff41;
-  --nav-bg: rgba(5,10,5,0.96); --nav-border: #1a2a1a; --card-bg: #0a140a;
-}
-
-body.t-rosa {
-  --bg: #fff8f9; --surface: #fff0f2; --border: #f5d8df;
-  --text: #2a1018; --muted: #c08090; --accent: #b04060;
-  --nav-bg: rgba(255,248,249,0.96); --nav-border: #f5d8df; --card-bg: #fff4f6;
-}
-
-body.t-rojo {
-  --bg: #0f0404; --surface: #1a0808; --border: #3a1010;
-  --text: #f0d0c0; --muted: #804040; --accent: #d04030;
-  --nav-bg: rgba(15,4,4,0.96); --nav-border: #3a1010; --card-bg: #180606;
-}
-
-body.t-trippy {
-  --bg: #060104; --surface: #120308; --border: #2a0a18;
-  --text: #ffaa44; --muted: #884422; --accent: #ff6600;
-  --nav-bg: rgba(6,1,4,0.96); --nav-border: #2a0a18; --card-bg: #0e0206;
-}
-
-body.t-cold {
-  --bg: #f8fbff; --surface: #eff4fc; --border: #d0dff4;
-  --text: #0a1428; --muted: #6080b0; --accent: #2050c0;
-  --nav-bg: rgba(248,251,255,0.96); --nav-border: #d0dff4; --card-bg: #f4f8fe;
-}
-
-/* ── NAV ────────────────────────────────────────────────── */
+/* ── NAV ── */
 nav {
   position: sticky; top: 0; z-index: 200;
-  background: var(--nav-bg);
-  backdrop-filter: blur(12px);
+  background: var(--nav-bg); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--nav-border);
-  padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 48px;
-  transition: background 0.7s ease, border-color 0.5s ease;
+  padding: 0 2rem; display: flex; align-items: center;
+  justify-content: space-between; height: 48px;
+  transition: background 0.8s, border-color 0.6s;
 }
-
 .nav-brand {
-  font-size: var(--sz-label); font-weight: var(--w-title);
-  letter-spacing: 0.18em; color: var(--accent);
-  text-transform: uppercase; text-decoration: none;
-  transition: color 0.5s;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.01em;
+  color: var(--text); text-decoration: none;
+  transition: color 0.6s; white-space: nowrap;
 }
-
 .nav-links { display: flex; }
 .nav-links a {
-  font-size: var(--sz-label); font-weight: var(--w-body);
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--muted); text-decoration: none;
-  padding: 0 1rem; height: 48px;
-  display: flex; align-items: center;
+  font-size: 10px; font-weight: 300; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); text-decoration: none;
+  padding: 0 1rem; height: 48px; display: flex; align-items: center;
   border-left: 1px solid var(--border);
-  transition: color 0.3s, border-color 0.5s;
+  transition: color 0.3s, border-color 0.6s;
 }
 .nav-links a:hover { color: var(--text); }
 .nav-links a.active { color: var(--accent); }
 
-/* ── HEADER ────────────────────────────────────────────── */
+/* ── HEADER ── */
 header {
   padding: 5rem 2.5rem 3.5rem;
   max-width: 900px; margin: 0 auto;
   border-bottom: 1px solid var(--border);
+  transition: border-color 0.6s;
 }
-
 .kicker {
-  font-size: var(--sz-label); font-weight: var(--w-body);
-  letter-spacing: 0.2em; color: var(--muted);
-  text-transform: uppercase; margin-bottom: 2.5rem;
-  display: flex; gap: 2rem; flex-wrap: wrap;
+  font-size: 10px; font-weight: 300; letter-spacing: 0.2em;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 2.5rem; display: flex; gap: 2rem; flex-wrap: wrap;
+  transition: color 0.6s;
 }
-
 h1 {
-  font-size: clamp(2.4rem, 7vw, 4.8rem);
-  font-weight: 300; line-height: 1.0;
-  letter-spacing: -0.03em; margin-bottom: 0.4rem;
-  color: var(--text); transition: color 0.5s;
+  font-size: 1.9rem; font-weight: 500; line-height: 1.1;
+  letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  color: var(--text); transition: color 0.6s;
 }
-h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
-
 .tagline {
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
-  font-weight: var(--w-comment); font-style: italic;
-  color: var(--muted); margin-bottom: 3rem;
-  transition: color 0.5s;
+  font-size: 13px; font-weight: 300; font-style: italic;
+  color: var(--muted); margin-bottom: 3rem; transition: color 0.6s;
 }
-
 .credits {
   display: flex; gap: 3rem; flex-wrap: wrap;
   border-top: 1px solid var(--border); padding-top: 1.5rem;
-  transition: border-color 0.5s;
+  transition: border-color 0.6s;
 }
-.credit-block { display: flex; flex-direction: column; gap: 0.25rem; }
-.credit-role {
-  font-size: var(--sz-label); font-weight: var(--w-body);
-  letter-spacing: 0.15em; color: var(--muted);
-  text-transform: uppercase; transition: color 0.5s;
-}
-.credit-name {
-  font-size: var(--sz-title); font-weight: var(--w-title);
-  color: var(--text); transition: color 0.5s;
-}
+.credit-block { display: flex; flex-direction: column; gap: 0.3rem; }
+.credit-role { font-size: 10px; font-weight: 300; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; transition: color 0.6s; }
+.credit-name { font-size: 13px; font-weight: 500; color: var(--text); transition: color 0.6s; }
 
-/* ── SECTION WRAPPER ────────────────────────────────────── */
+/* ── SECTIONS ── */
 .section { max-width: 900px; margin: 0 auto; padding: 0 2.5rem 5rem; }
-
 .section-header {
   padding: 4rem 0 1.5rem; margin-bottom: 2rem;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 1rem; flex-wrap: wrap;
-  transition: border-color 0.5s;
+  gap: 1rem; flex-wrap: wrap; transition: border-color 0.6s;
 }
-.section-header h2 {
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  font-weight: 300; letter-spacing: -0.01em;
-  color: var(--text); transition: color 0.5s;
-}
-.section-header h2 em { font-style: italic; color: var(--accent); }
-.section-count {
-  font-size: var(--sz-label); font-weight: var(--w-body);
-  color: var(--muted); letter-spacing: 0.1em; flex-shrink: 0;
-  transition: color 0.5s;
-}
+.section-header h2 { font-size: 1.5rem; font-weight: 300; color: var(--text); transition: color 0.6s; }
+.section-header h2 em { font-style: italic; color: var(--accent); transition: color 0.6s; }
+.section-count { font-size: 10px; font-weight: 300; color: var(--muted); letter-spacing: 0.1em; transition: color 0.6s; }
+.section-intro { font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.85; color: var(--muted); margin-bottom: 2.5rem; transition: color 0.6s; }
 
-.section-intro {
-  font-size: var(--sz-body); font-weight: var(--w-comment);
-  font-style: italic; line-height: 1.85; color: var(--muted);
-  margin-bottom: 2.5rem; transition: color 0.5s;
-}
-
-/* ── SUB-GROUPS ─────────────────────────────────────────── */
 .subgroup { margin-bottom: 3rem; }
 .subgroup-label {
-  font-size: var(--sz-label); font-weight: var(--w-title);
-  letter-spacing: 0.16em; color: var(--muted);
-  text-transform: uppercase; margin-bottom: 1.2rem;
-  display: flex; align-items: center; gap: 0.8rem;
-  transition: color 0.5s;
+  font-size: 10px; font-weight: 500; letter-spacing: 0.16em;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.8rem; transition: color 0.6s;
 }
-.subgroup-label::after {
-  content: ''; flex: 1; height: 1px;
-  background: var(--border); transition: background 0.5s;
-}
+.subgroup-label::after { content: ''; flex: 1; height: 1px; background: var(--border); transition: background 0.6s; }
 
-/* ── GIF CARDS ──────────────────────────────────────────── */
+/* ── CARDS ── */
 .gif-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 2px; overflow: hidden;
-  margin-bottom: 1.4rem;
-  transition: border-color 0.3s, background 0.5s;
+  background: var(--card-bg); border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden; margin-bottom: 1.4rem;
+  transition: border-color 0.3s, background 0.6s;
 }
 .gif-card:hover { border-color: var(--accent); }
-
 .card-header {
-  padding: 0.85rem 1.2rem;
-  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border);
   display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
-  transition: border-color 0.5s;
+  transition: border-color 0.6s;
 }
-.card-num {
-  font-size: var(--sz-num); font-weight: var(--w-title);
-  color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0;
-  transition: color 0.5s;
-}
-.card-title {
-  font-size: var(--sz-title); font-weight: var(--w-title);
-  color: var(--text); flex: 1; transition: color 0.5s;
-}
-.card-tag {
-  font-size: 9px; font-weight: var(--w-body);
-  color: var(--muted); letter-spacing: 0.08em;
-  border: 1px solid var(--border); padding: 0.15rem 0.5rem;
-  border-radius: 2px; flex-shrink: 0;
-  transition: all 0.5s;
-}
-
-.gif-wrap {
-  position: relative; width: 100%; background: #000;
-  min-height: 220px; display: flex;
-  align-items: center; justify-content: center; overflow: hidden;
-}
-.gif-wrap img, .gif-wrap video {
-  width: 100%; height: auto; display: block;
-}
-
-.card-comment {
-  padding: 0.7rem 1.2rem;
-  border-top: 1px solid var(--border);
-  transition: border-color 0.5s;
-}
-.card-comment p {
-  font-size: var(--sz-body); font-weight: var(--w-comment);
-  font-style: italic; line-height: 1.75; color: var(--muted);
-  transition: color 0.5s;
-}
-
+.card-num { font-size: 10px; font-weight: 500; color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0; transition: color 0.6s; }
+.card-title { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; transition: color 0.6s; }
+.card-tag { font-size: 9px; font-weight: 300; color: var(--muted); letter-spacing: 0.08em; border: 1px solid var(--border); padding: 0.15rem 0.5rem; border-radius: 2px; flex-shrink: 0; transition: all 0.6s; }
+.gif-wrap { position: relative; width: 100%; background: #000; min-height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.gif-wrap img, .gif-wrap video { width: 100%; height: auto; display: block; }
+.card-comment { padding: 0.7rem 1.2rem; border-top: 1px solid var(--border); transition: border-color 0.6s; }
+.card-comment p { font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.75; color: var(--muted); transition: color 0.6s; }
 .dot { text-align: center; padding: 0.15rem 0; color: var(--border); font-size: 0.9rem; margin-bottom: 0.3rem; }
 
-/* ── PLACEHOLDER ────────────────────────────────────────── */
-.placeholder {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 0.8rem;
-  background: var(--surface); transition: background 0.5s;
-}
-.ph-ring {
-  width: 44px; height: 44px; border: 1px solid var(--border);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.5s;
-}
-.ph-ring svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 1.2; transition: stroke 0.5s; }
-.ph-text { font-size: 9px; font-weight: var(--w-body); color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 2; transition: color 0.5s; }
+/* ── PLACEHOLDER ── */
+.placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; background: var(--surface); transition: background 0.6s; }
+.ph-ring { width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.ph-ring svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 1.2; }
+.ph-text { font-size: 9px; font-weight: 300; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 2; }
 
-/* ══════════════════════════════════════════════════════════
-   SLIDER DE MAPAS
-   ══════════════════════════════════════════════════════════ */
-#mapas { padding-bottom: 4rem; }
-
+/* ══════════════════════════════════════════════════════
+   SLIDER
+   ══════════════════════════════════════════════════════ */
+#mapas { padding-bottom: 0; }
 .mapas-header {
   max-width: 900px; margin: 0 auto;
   padding: 4rem 2.5rem 1.5rem;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 1rem; flex-wrap: wrap; margin-bottom: 0;
-  transition: border-color 0.5s;
+  gap: 1rem; flex-wrap: wrap; transition: border-color 0.6s;
 }
-.mapas-header h2 {
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  font-weight: 300; color: var(--text); transition: color 0.5s;
-}
-.mapas-header h2 em { font-style: italic; color: var(--accent); }
-.mapas-intro {
-  max-width: 900px; margin: 0 auto;
-  padding: 1.5rem 2.5rem 0;
-  font-size: var(--sz-body); font-weight: var(--w-comment);
-  font-style: italic; line-height: 1.85; color: var(--muted);
-  transition: color 0.5s;
-}
+.mapas-header h2 { font-size: 1.5rem; font-weight: 300; color: var(--text); transition: color 0.6s; }
+.mapas-header h2 em { font-style: italic; color: var(--accent); transition: color 0.6s; }
+.mapas-intro { max-width: 900px; margin: 0 auto; padding: 1.5rem 2.5rem 0; font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.85; color: var(--muted); transition: color 0.6s; }
 
 .slider-outer { position: relative; margin-top: 2rem; padding-bottom: 2.5rem; }
-
-.slider-track {
-  display: flex; overflow-x: scroll;
-  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; cursor: grab;
-}
+.slider-track { display: flex; overflow-x: scroll; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; cursor: grab; }
 .slider-track::-webkit-scrollbar { display: none; }
 .slider-track.grabbing { cursor: grabbing; }
-
-.slide {
-  flex: 0 0 100%; scroll-snap-align: start;
-  position: relative; height: clamp(320px, 52vw, 580px);
-  overflow: hidden; background: #080808;
-}
-.slide img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  transition: transform 0.6s ease;
-}
-.slide:hover img { transform: scale(1.01); }
-
-.slide-overlay {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, transparent 100%);
-  padding: 2.5rem 2.5rem 1.8rem;
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
-}
+.slide { flex: 0 0 100%; scroll-snap-align: start; position: relative; height: clamp(300px, 50vw, 560px); overflow: hidden; background: #000; }
+.slide img, .slide video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s; }
+.slide:hover img, .slide:hover video { transform: scale(1.01); }
+.slide-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 55%, transparent 100%); padding: 2.5rem 2.5rem 1.8rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
 .slide-text { flex: 1; }
-.slide-num {
-  font-size: 9px; font-weight: var(--w-body);
-  letter-spacing: 0.2em; color: var(--accent);
-  text-transform: uppercase; margin-bottom: 0.3rem; display: block;
-  transition: color 0.5s;
-}
-.slide-title {
-  font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: var(--w-title);
-  color: #fff; line-height: 1.2; margin-bottom: 0.4rem;
-}
-.slide-desc {
-  font-size: clamp(0.75rem, 1.4vw, 0.88rem); font-weight: var(--w-comment);
-  font-style: italic; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 500px;
-}
-.slide-index {
-  font-size: 9px; font-weight: var(--w-body);
-  color: rgba(255,255,255,0.3); letter-spacing: 0.08em;
-  flex-shrink: 0; align-self: flex-end;
-}
-
-.slider-arrows {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 100%; display: flex; justify-content: space-between;
-  padding: 0 1rem; pointer-events: none; z-index: 10;
-}
-.arrow-btn {
-  pointer-events: all; width: 40px; height: 40px;
-  border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-  color: rgba(255,255,255,0.7); font-size: 1rem;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, color 0.2s;
-}
-.arrow-btn:hover { border-color: #fff; color: #fff; }
-
-.slider-dots {
-  display: flex; justify-content: center; align-items: center;
-  gap: 0.5rem; padding: 1rem 0 0.5rem;
-}
-.slider-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--border); cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  border: none; padding: 0;
-}
+.slide-num { font-size: 9px; font-weight: 300; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.3rem; display: block; transition: color 0.6s; }
+.slide-title { font-size: clamp(0.95rem, 2.2vw, 1.3rem); font-weight: 500; color: #fff; line-height: 1.2; margin-bottom: 0.4rem; }
+.slide-desc { font-size: clamp(0.72rem, 1.3vw, 0.85rem); font-weight: 300; font-style: italic; color: rgba(255,255,255,0.55); line-height: 1.6; max-width: 480px; }
+.slide-index { font-size: 9px; font-weight: 300; color: rgba(255,255,255,0.25); flex-shrink: 0; align-self: flex-end; }
+.slider-arrows { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; display: flex; justify-content: space-between; padding: 0 1rem; pointer-events: none; z-index: 10; }
+.arrow-btn { pointer-events: all; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); color: rgba(255,255,255,0.6); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
+.arrow-btn:hover { border-color: rgba(255,255,255,0.8); color: #fff; }
+.slider-dots { display: flex; justify-content: center; align-items: center; gap: 0.5rem; padding: 1rem 0 0.5rem; }
+.slider-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s, transform 0.2s; border: none; padding: 0; }
 .slider-dot.active { background: var(--accent); transform: scale(1.4); }
 
-/* ══════════════════════════════════════════════════════════
-   9-GRID PYTHON
-   ══════════════════════════════════════════════════════════ */
-.grid-9 {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 3px; cursor: pointer;
+/* ── DENSIDAD VIDEO (full width after slider) ── */
+.densidad-wrap {
+  width: 100%; background: #000; overflow: hidden;
+  border-top: 1px solid #1c1c1c; border-bottom: 1px solid #1c1c1c;
+  margin-bottom: 0;
 }
-.grid-cell {
-  position: relative; aspect-ratio: 1;
-  overflow: hidden; background: #000;
+.densidad-wrap video { width: 100%; height: auto; display: block; max-height: 70vh; object-fit: cover; }
+.densidad-caption {
+  max-width: 900px; margin: 0 auto;
+  padding: 0.8rem 2.5rem 1.5rem;
+  font-size: 10px; font-weight: 300; font-style: italic;
+  color: var(--muted); letter-spacing: 0.05em; transition: color 0.6s;
 }
-.grid-cell img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform 0.4s ease, opacity 0.3s;
-}
-.grid-cell:hover img { transform: scale(1.05); opacity: 0.8; }
-.grid-cell-overlay {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0); display: flex;
-  align-items: center; justify-content: center;
-  transition: background 0.3s;
-}
-.grid-cell:hover .grid-cell-overlay { background: rgba(0,0,0,0.25); }
-.grid-cell-num {
-  font-size: 9px; font-weight: var(--w-title);
-  color: rgba(255,255,255,0); letter-spacing: 0.1em;
-  transition: color 0.3s;
-}
+
+/* ══════════════════════════════════════════════════════
+   9-GRID
+   ══════════════════════════════════════════════════════ */
+.grid-9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+.grid-cell { position: relative; aspect-ratio: 1; overflow: hidden; background: #000; cursor: pointer; }
+.grid-cell video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s, opacity 0.3s; }
+.grid-cell:hover video { transform: scale(1.05); opacity: 0.75; }
+.grid-cell-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0); transition: background 0.3s; }
+.grid-cell:hover .grid-cell-overlay { background: rgba(0,0,0,0.3); }
+.grid-cell-num { font-size: 9px; font-weight: 500; color: rgba(255,255,255,0); letter-spacing: 0.12em; transition: color 0.3s; }
 .grid-cell:hover .grid-cell-num { color: rgba(255,255,255,0.8); }
 
-/* Modal lightbox */
-.modal {
-  display: none; position: fixed; inset: 0; z-index: 999;
-  background: rgba(0,0,0,0.95); backdrop-filter: blur(8px);
-  align-items: center; justify-content: center; padding: 2rem;
-}
+/* Modal */
+.modal { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.96); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 2rem; }
 .modal.open { display: flex; }
-.modal-inner {
-  position: relative; max-width: 800px; width: 100%;
-}
-.modal-inner img {
-  width: 100%; height: auto; display: block;
-  max-height: 80vh; object-fit: contain;
-}
-.modal-close {
-  position: absolute; top: -2.5rem; right: 0;
-  font-size: 9px; font-weight: var(--w-title);
-  letter-spacing: 0.15em; color: rgba(255,255,255,0.5);
-  cursor: pointer; background: none; border: none; text-transform: uppercase;
-  transition: color 0.2s;
-}
+.modal-inner { position: relative; max-width: 820px; width: 100%; }
+.modal-inner video { width: 100%; height: auto; display: block; max-height: 82vh; object-fit: contain; }
+.modal-close { position: absolute; top: -2.2rem; right: 0; font-size: 9px; font-weight: 500; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); cursor: pointer; background: none; border: none; text-transform: uppercase; transition: color 0.2s; }
 .modal-close:hover { color: #fff; }
-.modal-caption {
-  margin-top: 0.8rem;
-  font-size: var(--sz-label); font-weight: var(--w-comment);
-  font-style: italic; color: rgba(255,255,255,0.4);
-  text-align: center; letter-spacing: 0.05em;
-}
+.modal-caption { margin-top: 0.8rem; font-size: 10px; font-weight: 300; font-style: italic; color: rgba(255,255,255,0.35); text-align: center; }
 
-/* ── FOOTER ─────────────────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  max-width: 900px; margin: 0 auto; padding: 2rem 2.5rem;
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 1rem; transition: border-color 0.5s;
-}
-.footer-meta {
-  font-size: 9px; font-weight: var(--w-body);
-  color: var(--muted); letter-spacing: 0.1em; line-height: 2;
-  transition: color 0.5s;
-}
-.footer-title {
-  font-size: var(--sz-body); font-weight: var(--w-comment);
-  font-style: italic; color: var(--muted); transition: color 0.5s;
-}
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--border); max-width: 900px; margin: 0 auto; padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; transition: border-color 0.6s; }
+.footer-meta { font-size: 9px; font-weight: 300; color: var(--muted); letter-spacing: 0.1em; line-height: 2; transition: color 0.6s; }
+.footer-title { font-size: 13px; font-weight: 300; font-style: italic; color: var(--muted); transition: color 0.6s; }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 640px) {
-  header, .section, footer, .mapas-header, .mapas-intro { padding-left: 1.2rem; padding-right: 1.2rem; }
-  h1 { font-size: 2.2rem; }
-  .nav-brand { display: none; }
+  header, .section, footer, .mapas-header, .mapas-intro, .densidad-caption { padding-left: 1.2rem; padding-right: 1.2rem; }
+  h1 { font-size: 1.5rem; }
+  .nav-brand { font-size: 12px; }
   .card-tag { display: none; }
   .slide-overlay { padding: 1.2rem; }
-  .grid-9 { grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .grid-9 { gap: 2px; }
 }
 </style>
 </head>
-<body class="t-bw" id="body">
+<body class="t-bw">
 
 <!-- ── NAV ── -->
 <nav>
-  <a href="#inicio" class="nav-brand">Arquitectura explícita</a>
+  <a href="#inicio" class="nav-brand">Arquitectura Explícita</a>
   <div class="nav-links">
-    <a href="#inicio" id="nl-inicio">Inicio</a>
-    <a href="#tesis" id="nl-tesis">Tesis</a>
-    <a href="#mapas" id="nl-mapas">Mapas</a>
-    <a href="#clase" id="nl-clase">Clase</a>
+    <a href="#inicio">Inicio</a>
+    <a href="#tesis">Tesis</a>
+    <a href="#mapas">Mapas</a>
+    <a href="#clase">Clase</a>
   </div>
 </nav>
 
-<!-- ── HEADER ── -->
+<!-- ══════════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════════ -->
 <header id="inicio" data-theme="t-bw">
   <div class="kicker">
     <span>Taller de proyectos</span>
     <span>Producción digital</span>
     <span>2026</span>
   </div>
-  <h1>Arquitectura<br><em>explícita</em></h1>
+  <h1>Arquitectura Explícita</h1>
   <p class="tagline">Ejercicios de experimentación</p>
   <div class="credits">
     <div class="credit-block">
@@ -501,9 +259,9 @@ footer {
   </div>
 </header>
 
-<!-- ══════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════════
      TESIS
-     ══════════════════════════════════════════════════════════ -->
+     ══════════════════════════════════════════════════════ -->
 <section class="section" id="tesis" data-theme="t-bw">
   <div class="section-header">
     <h2>Investigación &amp; <em>tesis</em></h2>
@@ -511,101 +269,73 @@ footer {
   </div>
   <p class="section-intro">Experimentación computacional vinculada a la tesis — grafos espaciales y simulación de fuerzas como instrumentos de diseño.</p>
 
-  <!-- 01 -->
   <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">01</span>
-      <span class="card-title">Cascada de icosaedros</span>
-      <span class="card-tag">tesis · geometría</span>
-    </div>
+    <div class="card-header"><span class="card-num">01</span><span class="card-title">Cascada de icosaedros</span><span class="card-tag">tesis · geometría</span></div>
     <div class="gif-wrap"><video src="https://i.imgur.com/oPuJH3Y.mp4" autoplay loop muted playsinline></video></div>
     <div class="card-comment"><p>Arquitectura explícita — conocimiento tácito. El conocimiento se disipa a veces mientras se comunica, pero sigue siendo cascada.</p></div>
   </div><div class="dot">·</div>
 
-  <!-- 02 -->
   <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">02</span>
-      <span class="card-title">Llegando al equilibrio — iteraciones del grafo de fuerzas</span>
-      <span class="card-tag">tesis · kangaroo</span>
-    </div>
+    <div class="card-header"><span class="card-num">02</span><span class="card-title">Llegando al equilibrio — iteraciones del grafo de fuerzas</span><span class="card-tag">tesis · kangaroo</span></div>
     <div class="gif-wrap"><video src="https://i.imgur.com/UKtCXkF.mp4" autoplay loop muted playsinline></video></div>
-    <div class="card-comment"><p>Movimientos de Kangaroo — el grafo pesado del programa converge iterativamente hacia el estado de equilibrio. Cada iteración es una distribución posible.</p></div>
+    <div class="card-comment"><p>Movimientos de Kangaroo — el grafo pesado converge iterativamente hacia el estado de equilibrio.</p></div>
   </div><div class="dot">·</div>
 
-  <!-- 03 -->
   <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">03</span>
-      <span class="card-title">Grafos y sus propiedades topológicas según el nodo</span>
-      <span class="card-tag">tesis · space syntax</span>
-    </div>
+    <div class="card-header"><span class="card-num">03</span><span class="card-title">Grafos y propiedades topológicas según el nodo</span><span class="card-tag">tesis · space syntax</span></div>
     <div class="gif-wrap"><video src="https://i.imgur.com/E0e1nx4.mp4" autoplay loop muted playsinline></video></div>
-    <div class="card-comment"><p>Cada nodo tiene diferente relación con los demás y sus profundidades son distintas según desde qué nodo empieces — la posición en el sistema define el significado.</p></div>
+    <div class="card-comment"><p>Cada nodo tiene diferente relación con los demás — sus profundidades son distintas según desde qué nodo empieces.</p></div>
   </div><div class="dot">·</div>
 
-  <!-- 04 -->
   <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">04</span>
-      <span class="card-title">Christopher Alexander — A Pattern Language</span>
-      <span class="card-tag">tesis · alexander</span>
-    </div>
+    <div class="card-header"><span class="card-num">04</span><span class="card-title">Christopher Alexander — A Pattern Language</span><span class="card-tag">tesis · alexander</span></div>
     <div class="gif-wrap"><video src="https://i.imgur.com/NPV4LyY.mp4" autoplay loop muted playsinline></video></div>
-    <div class="card-comment"><p>Relación de los patrones con sus propios patrones — 253 nodos conectados por dependencias jerárquicas. El lenguaje de patrones es, avant la lettre, un grafo pesado.</p></div>
+    <div class="card-comment"><p>Relación de los patrones con sus propios patrones — el lenguaje de patrones es, avant la lettre, un grafo pesado.</p></div>
   </div><div class="dot">·</div>
 
-  <!-- 05 -->
   <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">05</span>
-      <span class="card-title">Agregación recursiva de módulos — espacios mínimos habitables</span>
-      <span class="card-tag">tesis · wasp RA</span>
-    </div>
+    <div class="card-header"><span class="card-num">05</span><span class="card-title">Agregación recursiva de módulos — Wasp RA</span><span class="card-tag">tesis · wasp</span></div>
     <div class="gif-wrap"><video src="https://i.imgur.com/uN6j4nw.mp4" autoplay loop muted playsinline></video></div>
-    <div class="card-comment"><p>Wasp RA — el sistema ensambla módulos construidos a partir de espacios mínimos habitables respetando reglas de conexión y compatibilidad.</p></div>
+    <div class="card-comment"><p>Espacios mínimos habitables ensamblados recursivamente respetando reglas de conexión y compatibilidad.</p></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     MAPAS — SLIDER
-     ══════════════════════════════════════════════════════════ -->
-<section id="mapas" data-theme="t-maps">
+<!-- ══════════════════════════════════════════════════════
+     MAPAS — SLIDER (negro, letras rojas)
+     ══════════════════════════════════════════════════════ -->
+<section id="mapas" data-theme="t-noir">
   <div class="mapas-header">
     <h2>Análisis urbano — <em>mapas</em></h2>
-    <span class="section-count">7 mapas · desliza</span>
+    <span class="section-count">6 mapas · desliza</span>
   </div>
-  <p class="mapas-intro">Cartografía de datos urbanos sobre Vialidad de la Barranca e Interlomas — población, comercio, flujos y topología del sistema vial. B&amp;W con gradiente de rojo.</p>
+  <p class="mapas-intro">Cartografía de datos urbanos sobre Vialidad de la Barranca — población, comercio, flujos y topología. B&amp;W con gradiente de rojo.</p>
 
   <div class="slider-outer">
     <div class="slider-arrows">
       <button class="arrow-btn" id="prev">&#8592;</button>
       <button class="arrow-btn" id="next">&#8594;</button>
     </div>
-
     <div class="slider-track" id="slider">
-      <div class="slide"><img src="https://i.imgur.com/qZIEGpd.gif" alt="Mapa población">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 01 · población</span><p class="slide-title">Densidad de población</p><p class="slide-desc">Polígonos AGEB coloreados por densidad de habitantes — INEGI Censo 2020.</p></div><span class="slide-index">01 / 07</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/Wvh05Pz.gif" alt="Mapa calles">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 02 · vialidad</span><p class="slide-title">Calles e importancia vial</p><p class="slide-desc">Jerarquía vial coloreada por nivel de flujo. Vialidad de la Barranca como eje de alta integración.</p></div><span class="slide-index">02 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/qZIEGpd.gif" alt="Población">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">01 · población</span><p class="slide-title">Densidad de población</p><p class="slide-desc">Polígonos AGEB por densidad de habitantes — Censo INEGI 2020.</p></div><span class="slide-index">01/06</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/JXIngxw.gif" alt="Topología manzanas">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 03 · topología</span><p class="slide-title">Relación topológica de manzanas</p><p class="slide-desc">Profundidad entre zonas residenciales y nodos comerciales — la distancia real no es geométrica.</p></div><span class="slide-index">03 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/Wvh05Pz.gif" alt="Calles">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">02 · vialidad</span><p class="slide-title">Calles e importancia vial</p><p class="slide-desc">Jerarquía vial por nivel de flujo — Vialidad de la Barranca como eje de alta integración.</p></div><span class="slide-index">02/06</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/1kJQpBH.gif" alt="Comercios mapeados">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 04 · DENUE</span><p class="slide-title">Comercios mapeados</p><p class="slide-desc">Unidades económicas activas en radio de 1 km — DENUE 2023.</p></div><span class="slide-index">04 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/JXIngxw.gif" alt="Topología">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">03 · topología</span><p class="slide-title">Relación topológica de manzanas</p><p class="slide-desc">Profundidad entre zonas residenciales y nodos comerciales.</p></div><span class="slide-index">03/06</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/qOV1uAZ.gif" alt="Calles prioridad comercio">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 05 · prioridad</span><p class="slide-title">Calles con mayor prioridad de comercios</p><p class="slide-desc">Concentración de actividad comercial por metro lineal — demanda existente, oferta insuficiente.</p></div><span class="slide-index">05 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/1kJQpBH.gif" alt="Comercios">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">04 · DENUE</span><p class="slide-title">Comercios mapeados</p><p class="slide-desc">Unidades económicas activas en radio de 1 km — DENUE 2023.</p></div><span class="slide-index">04/06</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/JJBbeXO.gif" alt="Mapa síntesis">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 06 · síntesis</span><p class="slide-title">Mapa cargado de información</p><p class="slide-desc">Superposición de calles, comercios y población — el mapa que fundamenta la decisión del proyecto.</p></div><span class="slide-index">06 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/qOV1uAZ.gif" alt="Prioridad">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">05 · prioridad</span><p class="slide-title">Calles con mayor prioridad comercial</p><p class="slide-desc">Concentración de actividad por metro lineal — demanda existente, oferta insuficiente.</p></div><span class="slide-index">05/06</span></div></div>
 
-      <div class="slide"><img src="https://i.imgur.com/Mj2YRIa.gif" alt="Crecimiento densidades">
-        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 07 · densidad</span><p class="slide-title">Cómo crecen las densidades</p><p class="slide-desc">GIF del proceso de acumulación de datos urbanos — la ciudad construyéndose como campo de información.</p></div><span class="slide-index">07 / 07</span></div></div>
+      <div class="slide"><img src="https://i.imgur.com/JJBbeXO.gif" alt="Síntesis">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">06 · síntesis</span><p class="slide-title">Mapa cargado de información</p><p class="slide-desc">Superposición de calles, comercios y población — el mapa que fundamenta el proyecto.</p></div><span class="slide-index">06/06</span></div></div>
+
     </div>
-
     <div class="slider-dots" id="dots">
       <button class="slider-dot active" data-index="0"></button>
       <button class="slider-dot" data-index="1"></button>
@@ -613,37 +343,40 @@ footer {
       <button class="slider-dot" data-index="3"></button>
       <button class="slider-dot" data-index="4"></button>
       <button class="slider-dot" data-index="5"></button>
-      <button class="slider-dot" data-index="6"></button>
     </div>
   </div>
+
+  <!-- Densidad video — después del slider, sigue negro -->
+  <div class="densidad-wrap" data-theme="t-noir">
+    <video src="https://i.imgur.com/Mj2YRIa.mp4" autoplay loop muted playsinline></video>
+  </div>
+  <p class="densidad-caption">Crecimiento de densidades — el campo de información urbana acumulándose en tiempo real.</p>
+
 </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     CLASE
-     ══════════════════════════════════════════════════════════ -->
-<section class="section" id="clase" data-theme="t-bw">
+<!-- ══════════════════════════════════════════════════════
+     CLASE — negro → verde hacker → trippy → beige/rojo → jero
+     ══════════════════════════════════════════════════════ -->
+<section class="section" id="clase" data-theme="t-noir">
   <div class="section-header">
     <h2>Producción de <em>clase</em></h2>
     <span class="section-count">20 ejercicios</span>
   </div>
   <p class="section-intro">Ejercicios del semestre — geometría, simulación física, ruido Perlin y fórmulas matemáticas en movimiento.</p>
 
-  <!-- ── MACETAS ── -->
-  <div class="subgroup" data-theme="t-bw">
+  <!-- ── MACETAS — negro ── -->
+  <div class="subgroup" data-theme="t-noir">
     <p class="subgroup-label">Macetas</p>
-
     <div class="gif-card">
       <div class="card-header"><span class="card-num">C·01</span><span class="card-title">Top View</span><span class="card-tag">macetas · B&amp;W</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/AX7csEl.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Ejercicio para creación de macetas — vista superior.</p></div>
+      <div class="card-comment"><p>Vista superior — ejercicio de creación de macetas.</p></div>
     </div><div class="dot">·</div>
-
     <div class="gif-card">
       <div class="card-header"><span class="card-num">C·02</span><span class="card-title">Iteraciones</span><span class="card-tag">macetas · B&amp;W</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/9Sr4AVt.mp4" autoplay loop muted playsinline></video></div>
       <div class="card-comment"><p>Iteraciones del proceso de creación de macetas.</p></div>
     </div><div class="dot">·</div>
-
     <div class="gif-card">
       <div class="card-header"><span class="card-num">C·03</span><span class="card-title">Side View — Turning</span><span class="card-tag">macetas · B&amp;W</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/3vPGCKe.mp4" autoplay loop muted playsinline></video></div>
@@ -651,8 +384,8 @@ footer {
     </div>
   </div>
 
-  <!-- ── PERLIN NEGRO/BLANCO ── -->
-  <div class="subgroup" data-theme="t-bw">
+  <!-- ── PERLIN 1 — negro/blanco ── -->
+  <div class="subgroup" data-theme="t-noir">
     <p class="subgroup-label">Perlin — negro &amp; blanco</p>
     <div class="gif-card">
       <div class="card-header"><span class="card-num">C·04</span><span class="card-title">Perlin 1</span><span class="card-tag">perlin · negro/blanco</span></div>
@@ -661,143 +394,134 @@ footer {
     </div>
   </div>
 
-  <!-- ── PERLIN HACKER ── -->
-  <div class="subgroup" data-theme="t-hacker">
-    <p class="subgroup-label">Perlin — hacker</p>
-
+  <!-- ── PERLIN 2 — hacker inicio ── -->
+  <div class="subgroup" data-theme="t-hk1">
+    <p class="subgroup-label">Perlin — entrando al sistema</p>
     <div class="gif-card">
       <div class="card-header"><span class="card-num">C·05</span><span class="card-title">Perlin 2</span><span class="card-tag">perlin · verde</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/8JZktz4.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Negro con verde — estilo hacker. El ruido como código.</p></div>
-    </div><div class="dot">·</div>
+      <div class="card-comment"><p>Negro con verde — el ruido como código que empieza a activarse.</p></div>
+    </div>
+  </div>
 
+  <!-- ── PERLIN 3 — hacker pleno ── -->
+  <div class="subgroup" data-theme="t-hk3">
+    <p class="subgroup-label">Perlin — sistema activo</p>
     <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·06</span><span class="card-title">Perlin 3</span><span class="card-tag">perlin · verde</span></div>
+      <div class="card-header"><span class="card-num">C·06</span><span class="card-title">Perlin 3</span><span class="card-tag">perlin · hacker</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/u8n3Hhc.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Segunda variación en verde — la forma como sistema de información.</p></div>
+      <div class="card-comment"><p>Verde pleno — la forma como sistema de información en estado máximo.</p></div>
     </div>
   </div>
 
-  <!-- ── PERLIN ROSA ── -->
-  <div class="subgroup" data-theme="t-rosa">
-    <p class="subgroup-label">Perlin — rosa &amp; crema</p>
-
+  <!-- ── PERLIN CANDELA — transición rojo oscuro ── -->
+  <div class="subgroup" data-theme="t-trippy">
+    <p class="subgroup-label">Perlin con Félix Candela</p>
     <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·07</span><span class="card-title">Perlin 7</span><span class="card-tag">perlin · rosa</span></div>
-      <div class="gif-wrap"><video src="https://i.imgur.com/RE0rRH1.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Rosa con crema — el mismo algoritmo, otra sensación.</p></div>
-    </div><div class="dot">·</div>
-
-    <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·08</span><span class="card-title">Perlin 8</span><span class="card-tag">perlin · rosa</span></div>
-      <div class="gif-wrap"><video src="https://i.imgur.com/UVp0Es4.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Variación rosa — sutileza como decisión formal.</p></div>
-    </div>
-  </div>
-
-  <!-- ── PERLIN ROJO / FÉLIX CANDELA ── -->
-  <div class="subgroup" data-theme="t-rojo">
-    <p class="subgroup-label">Perlin con Félix Candela — rojo</p>
-
-    <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·09</span><span class="card-title">Perlin con Félix Candela</span><span class="card-tag">perlin · rojo/crema</span></div>
+      <div class="card-header"><span class="card-num">C·07</span><span class="card-title">Perlin con Félix Candela</span><span class="card-tag">perlin · rojo</span></div>
       <div class="gif-wrap"><video src="https://i.imgur.com/HSIJf1S.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Rojo con crema — la forma estructural de Candela procesada como campo de ruido.</p></div>
-    </div>
-  </div>
-
-  <!-- ── JEROGLÍFICOS ── -->
-  <div class="subgroup" data-theme="t-bw">
-    <p class="subgroup-label">Grouping de líneas — jeroglíficos</p>
-
-    <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·10</span><span class="card-title">Grouping de líneas jeroglíficos</span><span class="card-tag">clase · negro/crema</span></div>
-      <div class="gif-wrap"><video src="https://i.imgur.com/bloxw6L.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Negro con crema — grouping de líneas que construyen un sistema de signos.</p></div>
-    </div>
-  </div>
-
-  <!-- ── PERLIN EXPLOSIONADO ── -->
-  <div class="subgroup" data-theme="t-cold">
-    <p class="subgroup-label">Perlin explosionado — gradiente de temperatura</p>
-
-    <div class="gif-card">
-      <div class="card-header"><span class="card-num">C·11</span><span class="card-title">Perlin 8 Explosionado</span><span class="card-tag">perlin · naranja/azul</span></div>
-      <div class="gif-wrap"><video src="https://i.imgur.com/nSg74i1.mp4" autoplay loop muted playsinline></video></div>
-      <div class="card-comment"><p>Blanco con gradiente de temperatura naranja y azul — la explosión como método de lectura interna.</p></div>
+      <div class="card-comment"><p>La forma estructural de Candela procesada como campo de ruido — rojo con crema.</p></div>
     </div>
   </div>
 
   <!-- ── PYTHON TRIPPY 9-GRID ── -->
   <div class="subgroup" data-theme="t-trippy">
     <p class="subgroup-label">Python — fórmulas matemáticas en movimiento</p>
-    <p class="section-intro" style="margin-bottom:1rem;">Líneas moviéndose circularmente con colores amarillo, rojo, naranja y rosa sobre fondo negro — fórmulas matemáticas que se mueven en el espacio. Toca cualquiera para abrirla.</p>
-
-    <div class="gif-card" style="overflow:visible; background: transparent; border:none;">
+    <p class="section-intro" style="margin-bottom:1rem;">Líneas moviéndose circularmente con colores amarillo, rojo, naranja y rosa sobre fondo negro. Toca cualquiera para abrirla.</p>
+    <div class="gif-card" style="background:transparent;border:none;overflow:visible;">
       <div class="grid-9" id="grid9">
-        <div class="grid-cell" data-src="https://i.imgur.com/yjVJtf0.mp4" data-caption="Python 01 — fórmula matemática en movimiento"><video src="https://i.imgur.com/yjVJtf0.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">01</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/zJRcsXC.mp4" data-caption="Python 02 — fórmula matemática en movimiento"><video src="https://i.imgur.com/zJRcsXC.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">02</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/21UtfVx.mp4" data-caption="Python 03 — fórmula matemática en movimiento"><video src="https://i.imgur.com/21UtfVx.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">03</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/18x73qF.mp4" data-caption="Python 04 — fórmula matemática en movimiento"><video src="https://i.imgur.com/18x73qF.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">04</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/H3PTBmb.mp4" data-caption="Python 05 — fórmula matemática en movimiento"><video src="https://i.imgur.com/H3PTBmb.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">05</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/gTHoyIY.mp4" data-caption="Python 06 — fórmula matemática en movimiento"><video src="https://i.imgur.com/gTHoyIY.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">06</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/XqSYXBq.mp4" data-caption="Python 07 — fórmula matemática en movimiento"><video src="https://i.imgur.com/XqSYXBq.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">07</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/ULwcMz7.mp4" data-caption="Python 08 — fórmula matemática en movimiento"><video src="https://i.imgur.com/ULwcMz7.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">08</span></div></div>
-        <div class="grid-cell" data-src="https://i.imgur.com/8mQKFSP.mp4" data-caption="Python 09 — fórmula matemática en movimiento"><video src="https://i.imgur.com/8mQKFSP.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video><div class="grid-cell-overlay"><span class="grid-cell-num">09</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/yjVJtf0.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 01"><video src="https://i.imgur.com/yjVJtf0.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">01</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/zJRcsXC.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 02"><video src="https://i.imgur.com/zJRcsXC.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">02</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/21UtfVx.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 03"><video src="https://i.imgur.com/21UtfVx.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">03</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/18x73qF.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 04"><video src="https://i.imgur.com/18x73qF.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">04</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/H3PTBmb.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 05"><video src="https://i.imgur.com/H3PTBmb.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">05</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/gTHoyIY.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 06"><video src="https://i.imgur.com/gTHoyIY.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">06</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/XqSYXBq.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 07"><video src="https://i.imgur.com/XqSYXBq.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">07</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/ULwcMz7.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 08"><video src="https://i.imgur.com/ULwcMz7.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">08</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/8mQKFSP.mp4" data-caption="Fórmulas matemáticas en movimiento — composición 09"><video src="https://i.imgur.com/8mQKFSP.mp4" autoplay loop muted playsinline></video><div class="grid-cell-overlay"><span class="grid-cell-num">09</span></div></div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── PERLIN 7 8 EXPLOSIONADO — beige/rojo ── -->
+  <div class="subgroup" data-theme="t-beige">
+    <p class="subgroup-label">Perlin — rosa &amp; beige</p>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·08</span><span class="card-title">Perlin 7</span><span class="card-tag">perlin · rosa/crema</span></div>
+      <div class="gif-wrap"><video src="https://i.imgur.com/RE0rRH1.mp4" autoplay loop muted playsinline></video></div>
+      <div class="card-comment"><p>Rosa con crema — el mismo algoritmo, otra sensación.</p></div>
+    </div><div class="dot">·</div>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·09</span><span class="card-title">Perlin 8</span><span class="card-tag">perlin · rosa/crema</span></div>
+      <div class="gif-wrap"><video src="https://i.imgur.com/UVp0Es4.mp4" autoplay loop muted playsinline></video></div>
+      <div class="card-comment"><p>Sutileza como decisión formal — la temperatura del color cambia la lectura del espacio.</p></div>
+    </div><div class="dot">·</div>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·10</span><span class="card-title">Perlin 8 Explosionado</span><span class="card-tag">perlin · gradiente térmico</span></div>
+      <div class="gif-wrap"><video src="https://i.imgur.com/nSg74i1.mp4" autoplay loop muted playsinline></video></div>
+      <div class="card-comment"><p>Blanco con gradiente de temperatura naranja y azul — la explosión como método de lectura interna.</p></div>
+    </div>
+  </div>
+
+  <!-- ── CIERRE: JEROGLÍFICOS — negro/crema ── -->
+  <div class="subgroup" data-theme="t-jero">
+    <p class="subgroup-label">Grouping de líneas — jeroglíficos</p>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·11</span><span class="card-title">Grouping de líneas jeroglíficos</span><span class="card-tag">clase · negro/crema</span></div>
+      <div class="gif-wrap"><video src="https://i.imgur.com/bloxw6L.mp4" autoplay loop muted playsinline></video></div>
+      <div class="card-comment"><p>Negro con crema — grouping de líneas que construyen un sistema de signos.</p></div>
     </div>
   </div>
 
 </section>
 
 <!-- ── FOOTER ── -->
-<footer>
+<footer data-theme="t-jero">
   <div class="footer-meta">
     Taller de proyectos y producción digital<br>
     Daniel López Bago Torres &nbsp;·&nbsp; Rodrigo Díaz Escalante<br>
     2026
   </div>
-  <div class="footer-title">Arquitectura explícita</div>
+  <div class="footer-title">Arquitectura Explícita</div>
 </footer>
 
-<!-- ── MODAL LIGHTBOX ── -->
+<!-- ── MODAL ── -->
 <div class="modal" id="modal">
   <div class="modal-inner">
     <button class="modal-close" id="modal-close">Cerrar ×</button>
-    <video id="modal-video" autoplay loop muted playsinline style="width:100%;height:auto;max-height:80vh;display:block;"></video>
+    <video id="modal-video" autoplay loop muted playsinline></video>
     <p class="modal-caption" id="modal-caption"></p>
   </div>
 </div>
 
 <script>
-// ── THEME ENGINE ─────────────────────────────────────────────
-const body      = document.getElementById('body');
-const sections  = document.querySelectorAll('[data-theme]');
-const subgroups = document.querySelectorAll('.subgroup[data-theme]');
-const navLinks  = document.querySelectorAll('.nav-links a');
+// ── THEME ENGINE ──────────────────────────────────────────
+const body = document.body;
 const allThemed = document.querySelectorAll('[data-theme]');
+const navLinks = document.querySelectorAll('.nav-links a');
 
 const themeObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      const theme = e.target.dataset.theme;
-      if (theme) body.className = theme;
-      // Nav highlight
-      const id = e.target.closest('section, header')?.id || e.target.id;
+    if (!e.isIntersecting) return;
+    const theme = e.target.dataset.theme;
+    if (theme) body.className = theme;
+    // nav highlight
+    const sid = e.target.closest('section, header')?.id || e.target.id;
+    if (sid) {
       navLinks.forEach(l => l.classList.remove('active'));
-      const active = document.querySelector(`.nav-links a[href="#${id}"]`);
-      if (active) active.classList.add('active');
+      const a = document.querySelector(`.nav-links a[href="#${sid}"]`);
+      if (a) a.classList.add('active');
     }
   });
-}, { threshold: 0.35 });
+}, { threshold: 0.4 });
 
 allThemed.forEach(el => themeObs.observe(el));
 
-// ── SLIDER ───────────────────────────────────────────────────
-const track  = document.getElementById('slider');
-const dots   = document.querySelectorAll('.slider-dot');
-const prev   = document.getElementById('prev');
-const next   = document.getElementById('next');
+// ── SLIDER ───────────────────────────────────────────────
+const track = document.getElementById('slider');
+const dots  = document.querySelectorAll('.slider-dot');
+const prev  = document.getElementById('prev');
+const next  = document.getElementById('next');
 let cur = 0, total = dots.length;
 
 function goTo(i) {
@@ -809,39 +533,37 @@ function goTo(i) {
 prev.addEventListener('click', () => goTo(cur - 1));
 next.addEventListener('click', () => goTo(cur + 1));
 dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.index)));
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') goTo(cur - 1);
+  if (e.key === 'ArrowRight') goTo(cur + 1);
+});
 
 let st;
 track.addEventListener('scroll', () => {
   clearTimeout(st);
   st = setTimeout(() => {
     const i = Math.round(track.scrollLeft / track.clientWidth);
-    if (i !== cur) { cur = i; dots.forEach((d,idx) => d.classList.toggle('active', idx === cur)); }
+    if (i !== cur) { cur = i; dots.forEach((d, idx) => d.classList.toggle('active', idx === cur)); }
   }, 80);
 });
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft')  goTo(cur - 1);
-  if (e.key === 'ArrowRight') goTo(cur + 1);
-});
-
-let isDown = false, startX, startScroll;
-track.addEventListener('mousedown', e => { isDown = true; track.classList.add('grabbing'); startX = e.pageX - track.offsetLeft; startScroll = track.scrollLeft; });
+let isDown = false, sX, sS;
+track.addEventListener('mousedown', e => { isDown = true; track.classList.add('grabbing'); sX = e.pageX - track.offsetLeft; sS = track.scrollLeft; });
 track.addEventListener('mouseleave', () => { isDown = false; track.classList.remove('grabbing'); });
-track.addEventListener('mouseup',    () => { isDown = false; track.classList.remove('grabbing'); });
-track.addEventListener('mousemove',  e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = startScroll - (e.pageX - track.offsetLeft - startX); });
+track.addEventListener('mouseup', () => { isDown = false; track.classList.remove('grabbing'); });
+track.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = sS - (e.pageX - track.offsetLeft - sX); });
 
-// ── MODAL / 9-GRID ───────────────────────────────────────────
-const modal       = document.getElementById('modal');
-// modal uses video element
-const modalCap    = document.getElementById('modal-caption');
-const modalClose  = document.getElementById('modal-close');
+// ── MODAL ────────────────────────────────────────────────
+const modal   = document.getElementById('modal');
+const modalV  = document.getElementById('modal-video');
+const modalC  = document.getElementById('modal-caption');
+const mClose  = document.getElementById('modal-close');
 
 document.querySelectorAll('.grid-cell').forEach(cell => {
   cell.addEventListener('click', () => {
-    const vid = document.getElementById('modal-video');
-    vid.src = cell.dataset.src;
-    vid.play();
-    document.getElementById('modal-caption').textContent = cell.dataset.caption;
+    modalV.src = cell.dataset.src;
+    modalV.play();
+    modalC.textContent = cell.dataset.caption;
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   });
@@ -849,11 +571,10 @@ document.querySelectorAll('.grid-cell').forEach(cell => {
 
 function closeModal() {
   modal.classList.remove('open');
-  const vid = document.getElementById('modal-video');
-  vid.pause(); vid.src = '';
+  modalV.pause(); modalV.src = '';
   document.body.style.overflow = '';
 }
-modalClose.addEventListener('click', closeModal);
+mClose.addEventListener('click', closeModal);
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
