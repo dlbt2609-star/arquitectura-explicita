@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitectura Explícita — Daniel López Bago Torres</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0e0e; --surface: #161616; --border: #2a2a2a;
+    --accent: #c8a96e; --text: #e8e4dc; --muted: #555;
+    --mono: 'Space Mono', monospace; --serif: 'Cormorant Garamond', Georgia, serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--serif); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 4rem 2rem 3rem;
+    max-width: 960px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .kicker span::before { content: '—  '; color: var(--border); }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 7vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+
+  .tagline {
+    font-family: var(--serif);
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    line-height: 1.5;
+  }
+
+  .credits {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .credit-block { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .credit-role {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .credit-name {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── INTRO TEXT ── */
+  .intro {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 0;
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #8a8680;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 3rem 2rem 0;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── MAIN ── */
+  main { max-width: 960px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+
+  /* ── GIF CARD ── */
+  .gif-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    transition: border-color 0.35s ease;
+  }
+  .gif-card:hover { border-color: var(--accent); }
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .card-num {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    flex: 1;
+  }
+
+  .card-tag {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .gif-wrap {
+    position: relative;
+    width: 100%;
+    background: #0a0a0a;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .gif-wrap img { width: 100%; height: auto; display: block; }
+
+  /* Placeholder */
+  .placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .ph-ring {
+    width: 56px; height: 56px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ph-ring svg { width: 22px; height: 22px; stroke: var(--muted); fill: none; stroke-width: 1.2; }
+  .ph-text { font-family: var(--mono); font-size: 0.55rem; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 2; }
+
+  .card-body {
+    padding: 1.1rem 1.5rem 1.4rem;
+    border-top: 1px solid var(--border);
+  }
+  .card-body p {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: #7a7670;
+  }
+
+  /* ── DIVIDER ── */
+  .arrow {
+    text-align: center;
+    padding: 0.1rem 0;
+    color: #222;
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: end;
+  }
+
+  .footer-meta {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 2;
+  }
+
+  .footer-title {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #333;
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    header, main { padding-left: 1.2rem; padding-right: 1.2rem; }
+    h1 { font-size: 2rem; }
+    .credits { gap: 1.5rem; }
+    .card-tag { display: none; }
+    footer { grid-template-columns: 1fr; }
+    .footer-title { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">
+    <span>Taller de proyectos</span>
+    <span>Producción digital</span>
+    <span>2026</span>
+  </div>
+
+  <h1>Arquitectura<br><em>explícita</em></h1>
+  <p class="tagline">Ejercicios de experimentación</p>
+
+  <div class="credits">
+    <div class="credit-block">
+      <span class="credit-role">Alumno</span>
+      <span class="credit-name">Daniel López Bago Torres</span>
+    </div>
+    <div class="credit-block">
+      <span class="credit-role">Profesor</span>
+      <span class="credit-name">Rodrigo Díaz Escalante</span>
+    </div>
+  </div>
+</header>
+
+<p class="intro">
+  Colección de ejercicios de experimentación computacional. Cada gif documenta
+  un momento del proceso — del grafo a la planta, de la teoría al instrumento.
+</p>
+
+<div class="section-label">Ejercicios — material de clase</div>
+
+<main>
+
+  <!--
+  ═══════════════════════════════════════════════════
+  CÓMO AGREGAR TUS GIFs:
+
+  1. Sube tu GIF a Imgur, Giphy, GitHub o Google Drive
+  2. Copia el link directo (que termine en .gif)
+  3. En el bloque correspondiente, descomenta la línea:
+        <!-- <img src="URL" alt="..."> - ->
+     y borra el div.placeholder de ese mismo bloque
+
+  Para agregar MÁS tarjetas, copia un bloque .gif-card completo
+  y cambia el número, título, tag y descripción.
+  ═══════════════════════════════════════════════════
+  -->
+
+  <!-- ── TARJETA 1 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">01</span>
+      <span class="card-title">Populate</span>
+      <span class="card-tag">estado inicial</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Populate"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <div class="arrow">·</div>
+
+  <!-- ── TARJETA 2 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">02</span>
+      <span class="card-title">Lista de ventilaciones</span>
+      <span class="card-tag">clasificación de nodos</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Lista ventilaciones"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <div class="arrow">·</div>
+
+  <!-- ── TARJETA 3 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">03</span>
+      <span class="card-title">Grafo antes de Kangaroo</span>
+      <span class="card-tag">sistema en reposo</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Grafo antes de Kangaroo"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <div class="arrow">·</div>
+
+  <!-- ── TARJETA 4 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">04</span>
+      <span class="card-title">Grafo después de Kangaroo</span>
+      <span class="card-tag">equilibrio</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Grafo después de Kangaroo"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <div class="arrow">·</div>
+
+  <!-- ── TARJETA 5 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">05</span>
+      <span class="card-title">Grouping modular</span>
+      <span class="card-tag">retícula 1.575 m</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Grouping"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <div class="arrow">·</div>
+
+  <!-- ── TARJETA 6 ── -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">06</span>
+      <span class="card-title">Planta esquemática</span>
+      <span class="card-tag">resultado</span>
+    </div>
+    <div class="gif-wrap">
+      <!-- <img src="URL_DE_TU_GIF" alt="Planta esquemática"> -->
+      <div class="placeholder">
+        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <p class="ph-text">Agrega tu GIF<br>descomenta &lt;img src="URL"&gt;<br>y borra este placeholder</p>
+      </div>
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio. Qué muestra, qué demuestra, qué decisión de diseño documenta.</p></div>
+  </div>
+
+  <!--
+  ═══════════════════════════════════
+  Para agregar más GIFs copia este bloque:
+
+  <div class="arrow">·</div>
+
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">07</span>
+      <span class="card-title">Título del ejercicio</span>
+      <span class="card-tag">etiqueta</span>
+    </div>
+    <div class="gif-wrap">
+      <img src="URL_DE_TU_GIF" alt="descripción">
+    </div>
+    <div class="card-body"><p>Descripción del ejercicio.</p></div>
+  </div>
+  ═══════════════════════════════════
+  -->
+
+</main>
+
+<footer>
+  <div class="footer-meta">
+    Taller de proyectos y producción digital<br>
+    Daniel López Bago Torres &nbsp;·&nbsp; Rodrigo Díaz Escalante<br>
+    2026
+  </div>
+  <div class="footer-title">Arquitectura explícita</div>
+</footer>
+
+</body>
+</html>
