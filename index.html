@@ -4,286 +4,484 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arquitectura Explícita — Daniel López Bago Torres</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0e0e0e; --surface: #161616; --border: #2a2a2a;
-    --accent: #c8a96e; --text: #e8e4dc; --muted: #555;
-    --mono: 'Space Mono', monospace; --serif: 'Cormorant Garamond', Georgia, serif;
-  }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: var(--serif); min-height: 100vh; }
+/* ══════════════════════════════════════════════════════════
+   VARIABLES + RESET
+   ══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── NAV ── */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(14,14,14,0.96);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 52px;
-  }
-  .nav-brand { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; color: var(--accent); text-transform: uppercase; text-decoration: none; }
-  .nav-links { display: flex; gap: 0; }
-  .nav-links a {
-    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted); text-decoration: none;
-    padding: 0 1.1rem; height: 52px; display: flex; align-items: center;
-    border-left: 1px solid var(--border);
-    transition: color 0.2s, background 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); background: var(--surface); }
-  .nav-links a.active { color: var(--accent); }
+:root {
+  --bg:       #ffffff;
+  --surface:  #f6f6f6;
+  --border:   #e4e4e4;
+  --text:     #000000;
+  --muted:    #999999;
+  --accent:   #000000;
+  --nav-bg:   rgba(255,255,255,0.96);
+  --nav-border: #e4e4e4;
+  --card-bg:  #f9f9f9;
 
-  /* ── HEADER ── */
-  header { padding: 4rem 2rem 3rem; max-width: 960px; margin: 0 auto; border-bottom: 1px solid var(--border); }
-  .kicker { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; margin-bottom: 2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
-  .kicker span::before { content: '—  '; color: var(--border); }
-  h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(2.2rem, 7vw, 4.2rem); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
-  h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
-  .tagline { font-family: var(--serif); font-size: clamp(1rem, 2.5vw, 1.3rem); font-weight: 300; font-style: italic; color: var(--muted); margin-bottom: 2.5rem; }
-  .credits { display: flex; gap: 3rem; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1.5rem; }
-  .credit-block { display: flex; flex-direction: column; gap: 0.3rem; }
-  .credit-role { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
-  .credit-name { font-family: var(--serif); font-size: 1rem; font-weight: 400; color: var(--text); }
+  --f-title:  'Inter', sans-serif;
+  --w-title:  500;   /* Medium */
+  --w-body:   300;   /* Light  */
+  --w-comment:300;
+  --sz-title: 15px;
+  --sz-body:  13px;
+  --sz-label: 10px;
+  --sz-num:   10px;
+}
 
-  /* ── GENERIC SECTION ── */
-  .section { max-width: 960px; margin: 0 auto; padding: 0 2rem 4rem; }
-  .section-header { padding: 3.5rem 0 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .section-header h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.01em; line-height: 1.1; }
-  .section-header h2 em { font-style: italic; color: var(--accent); }
-  .section-count { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.1em; flex-shrink: 0; }
-  .section-intro { font-family: var(--serif); font-size: 1rem; font-weight: 300; line-height: 1.8; color: #7a7670; margin-bottom: 2.5rem; }
+html { scroll-behavior: smooth; }
 
-  /* ── CARDS ── */
-  .gif-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 1.8rem; transition: border-color 0.35s; }
-  .gif-card:hover { border-color: var(--accent); }
-  .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; }
-  .card-num { font-family: var(--mono); font-size: 0.58rem; color: var(--accent); letter-spacing: 0.12em; flex-shrink: 0; }
-  .card-title { font-family: var(--serif); font-size: 1.1rem; font-weight: 400; flex: 1; }
-  .card-tag { font-family: var(--mono); font-size: 0.52rem; color: var(--muted); letter-spacing: 0.08em; border: 1px solid var(--border); padding: 0.2rem 0.5rem; border-radius: 2px; flex-shrink: 0; }
-  .card-tag.tesis { color: var(--accent); border-color: rgba(200,169,110,0.3); }
-  .card-tag.clase { color: #7ab8c8; border-color: rgba(122,184,200,0.3); }
-  .card-tag.mapa { color: #a8c87a; border-color: rgba(168,200,122,0.3); }
-  .gif-wrap { position: relative; width: 100%; background: #0a0a0a; min-height: 240px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .gif-wrap img { width: 100%; height: auto; display: block; }
-  .placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
-  .ph-ring { width: 52px; height: 52px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-  .ph-ring svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.2; }
-  .ph-text { font-family: var(--mono); font-size: 0.55rem; color: var(--muted); letter-spacing: 0.08em; text-align: center; line-height: 2; }
-  .card-body { padding: 1rem 1.5rem 1.3rem; border-top: 1px solid var(--border); }
-  .card-body p { font-family: var(--serif); font-size: 0.95rem; font-weight: 300; line-height: 1.8; color: #7a7670; }
-  .dot { text-align: center; padding: 0.1rem 0; color: #222; font-size: 1rem; margin-bottom: 0.4rem; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-title);
+  font-weight: var(--w-body);
+  font-size: var(--sz-body);
+  transition: background 0.7s ease, color 0.5s ease;
+  min-height: 100vh;
+}
 
-  /* ══════════════════════════════════════════
-     SLIDER DE MAPAS
-     ══════════════════════════════════════════ */
-  #mapas {
-    /* full width — no max-width */
-    padding: 0;
-  }
+/* ── THEMES ────────────────────────────────────────────── */
 
-  .mapas-header {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 3.5rem 2rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-    margin-bottom: 0;
-  }
-  .mapas-header h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 4vw, 2.4rem); }
-  .mapas-header h2 em { font-style: italic; color: var(--accent); }
-  .mapas-header .section-count { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.1em; }
+body.t-bw {
+  --bg: #ffffff; --surface: #f6f6f6; --border: #e4e4e4;
+  --text: #000; --muted: #999; --accent: #000;
+  --nav-bg: rgba(255,255,255,0.96); --nav-border: #e4e4e4; --card-bg: #f9f9f9;
+}
 
-  .mapas-intro {
-    max-width: 960px; margin: 0 auto;
-    padding: 1.5rem 2rem 0;
-    font-family: var(--serif); font-size: 1rem; font-weight: 300; line-height: 1.8; color: #7a7670;
-  }
+body.t-maps {
+  --bg: #ffffff; --surface: #faf5f5; --border: #f0dede;
+  --text: #111; --muted: #b08888; --accent: #c0392b;
+  --nav-bg: rgba(255,255,255,0.96); --nav-border: #f0dede; --card-bg: #fdf8f8;
+}
 
-  /* Slider container */
-  .slider-outer {
-    position: relative;
-    margin-top: 2rem;
-    padding-bottom: 3rem;
-  }
+body.t-hacker {
+  --bg: #050a05; --surface: #0a120a; --border: #1a2a1a;
+  --text: #00ff41; --muted: #2a6a2a; --accent: #00ff41;
+  --nav-bg: rgba(5,10,5,0.96); --nav-border: #1a2a1a; --card-bg: #0a140a;
+}
 
-  .slider-track {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 0;
-    cursor: grab;
-  }
-  .slider-track::-webkit-scrollbar { display: none; }
-  .slider-track.grabbing { cursor: grabbing; }
+body.t-rosa {
+  --bg: #fff8f9; --surface: #fff0f2; --border: #f5d8df;
+  --text: #2a1018; --muted: #c08090; --accent: #b04060;
+  --nav-bg: rgba(255,248,249,0.96); --nav-border: #f5d8df; --card-bg: #fff4f6;
+}
 
-  /* Each slide */
-  .slide {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    position: relative;
-    height: clamp(340px, 55vw, 620px);
-    overflow: hidden;
-    background: #080808;
-  }
+body.t-rojo {
+  --bg: #0f0404; --surface: #1a0808; --border: #3a1010;
+  --text: #f0d0c0; --muted: #804040; --accent: #d04030;
+  --nav-bg: rgba(15,4,4,0.96); --nav-border: #3a1010; --card-bg: #180606;
+}
 
-  .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    transition: transform 0.6s ease;
-  }
-  .slide:hover img { transform: scale(1.015); }
+body.t-trippy {
+  --bg: #060104; --surface: #120308; --border: #2a0a18;
+  --text: #ffaa44; --muted: #884422; --accent: #ff6600;
+  --nav-bg: rgba(6,1,4,0.96); --nav-border: #2a0a18; --card-bg: #0e0206;
+}
 
-  /* Overlay gradient + text at bottom */
-  .slide-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
-    padding: 2.5rem 2.5rem 1.8rem;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
-  }
+body.t-cold {
+  --bg: #f8fbff; --surface: #eff4fc; --border: #d0dff4;
+  --text: #0a1428; --muted: #6080b0; --accent: #2050c0;
+  --nav-bg: rgba(248,251,255,0.96); --nav-border: #d0dff4; --card-bg: #f4f8fe;
+}
 
-  .slide-text { flex: 1; }
+/* ── NAV ────────────────────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--nav-border);
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 48px;
+  transition: background 0.7s ease, border-color 0.5s ease;
+}
 
-  .slide-num {
-    font-family: var(--mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-    display: block;
-  }
+.nav-brand {
+  font-size: var(--sz-label); font-weight: var(--w-title);
+  letter-spacing: 0.18em; color: var(--accent);
+  text-transform: uppercase; text-decoration: none;
+  transition: color 0.5s;
+}
 
-  .slide-title {
-    font-family: var(--serif);
-    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-    font-weight: 300;
-    color: #fff;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
+.nav-links { display: flex; }
+.nav-links a {
+  font-size: var(--sz-label); font-weight: var(--w-body);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  padding: 0 1rem; height: 48px;
+  display: flex; align-items: center;
+  border-left: 1px solid var(--border);
+  transition: color 0.3s, border-color 0.5s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--accent); }
 
-  .slide-desc {
-    font-family: var(--serif);
-    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-    font-weight: 300;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.6;
-    max-width: 540px;
-  }
+/* ── HEADER ────────────────────────────────────────────── */
+header {
+  padding: 5rem 2.5rem 3.5rem;
+  max-width: 900px; margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
 
-  .slide-index {
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 0.08em;
-    flex-shrink: 0;
-    align-self: flex-end;
-  }
+.kicker {
+  font-size: var(--sz-label); font-weight: var(--w-body);
+  letter-spacing: 0.2em; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 2.5rem;
+  display: flex; gap: 2rem; flex-wrap: wrap;
+}
 
-  /* Arrow buttons */
-  .slider-arrows {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 1rem;
-    pointer-events: none;
-    z-index: 10;
-  }
+h1 {
+  font-size: clamp(2.4rem, 7vw, 4.8rem);
+  font-weight: 300; line-height: 1.0;
+  letter-spacing: -0.03em; margin-bottom: 0.4rem;
+  color: var(--text); transition: color 0.5s;
+}
+h1 em { font-style: italic; font-weight: 300; color: var(--accent); }
 
-  .arrow-btn {
-    pointer-events: all;
-    width: 44px; height: 44px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    background: rgba(14,14,14,0.7);
-    backdrop-filter: blur(4px);
-    color: rgba(255,255,255,0.6);
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: border-color 0.2s, color 0.2s, background 0.2s;
-    user-select: none;
-  }
-  .arrow-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(14,14,14,0.9); }
+.tagline {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: var(--w-comment); font-style: italic;
+  color: var(--muted); margin-bottom: 3rem;
+  transition: color 0.5s;
+}
 
-  /* Dots */
-  .slider-dots {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1.2rem 0 0.5rem;
-  }
+.credits {
+  display: flex; gap: 3rem; flex-wrap: wrap;
+  border-top: 1px solid var(--border); padding-top: 1.5rem;
+  transition: border-color 0.5s;
+}
+.credit-block { display: flex; flex-direction: column; gap: 0.25rem; }
+.credit-role {
+  font-size: var(--sz-label); font-weight: var(--w-body);
+  letter-spacing: 0.15em; color: var(--muted);
+  text-transform: uppercase; transition: color 0.5s;
+}
+.credit-name {
+  font-size: var(--sz-title); font-weight: var(--w-title);
+  color: var(--text); transition: color 0.5s;
+}
 
-  .slider-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--border);
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    border: none;
-    padding: 0;
-  }
-  .slider-dot.active { background: var(--accent); transform: scale(1.3); }
+/* ── SECTION WRAPPER ────────────────────────────────────── */
+.section { max-width: 900px; margin: 0 auto; padding: 0 2.5rem 5rem; }
 
-  /* Placeholder slide */
-  .slide-placeholder {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 1rem;
-    background: var(--surface);
-  }
-  .slide-placeholder .ph-ring { width: 52px; height: 52px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-  .slide-placeholder .ph-ring svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.2; }
-  .slide-placeholder .ph-text { font-family: var(--mono); font-size: 0.55rem; color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 2; }
+.section-header {
+  padding: 4rem 0 1.5rem; margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  transition: border-color 0.5s;
+}
+.section-header h2 {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 300; letter-spacing: -0.01em;
+  color: var(--text); transition: color 0.5s;
+}
+.section-header h2 em { font-style: italic; color: var(--accent); }
+.section-count {
+  font-size: var(--sz-label); font-weight: var(--w-body);
+  color: var(--muted); letter-spacing: 0.1em; flex-shrink: 0;
+  transition: color 0.5s;
+}
 
-  /* ── FOOTER ── */
-  footer { border-top: 1px solid var(--border); max-width: 960px; margin: 0 auto; padding: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  .footer-meta { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.08em; line-height: 2; }
-  .footer-title { font-family: var(--serif); font-size: 0.85rem; font-style: italic; color: #333; }
+.section-intro {
+  font-size: var(--sz-body); font-weight: var(--w-comment);
+  font-style: italic; line-height: 1.85; color: var(--muted);
+  margin-bottom: 2.5rem; transition: color 0.5s;
+}
 
-  @media (max-width: 640px) {
-    header, .section, footer { padding-left: 1.2rem; padding-right: 1.2rem; }
-    h1 { font-size: 2.2rem; }
-    .nav-brand { display: none; }
-    .card-tag { display: none; }
-    .slide-overlay { padding: 1.5rem; }
-    .slider-arrows { padding: 0 0.4rem; }
-  }
+/* ── SUB-GROUPS ─────────────────────────────────────────── */
+.subgroup { margin-bottom: 3rem; }
+.subgroup-label {
+  font-size: var(--sz-label); font-weight: var(--w-title);
+  letter-spacing: 0.16em; color: var(--muted);
+  text-transform: uppercase; margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.8rem;
+  transition: color 0.5s;
+}
+.subgroup-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--border); transition: background 0.5s;
+}
+
+/* ── GIF CARDS ──────────────────────────────────────────── */
+.gif-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden;
+  margin-bottom: 1.4rem;
+  transition: border-color 0.3s, background 0.5s;
+}
+.gif-card:hover { border-color: var(--accent); }
+
+.card-header {
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+  transition: border-color 0.5s;
+}
+.card-num {
+  font-size: var(--sz-num); font-weight: var(--w-title);
+  color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0;
+  transition: color 0.5s;
+}
+.card-title {
+  font-size: var(--sz-title); font-weight: var(--w-title);
+  color: var(--text); flex: 1; transition: color 0.5s;
+}
+.card-tag {
+  font-size: 9px; font-weight: var(--w-body);
+  color: var(--muted); letter-spacing: 0.08em;
+  border: 1px solid var(--border); padding: 0.15rem 0.5rem;
+  border-radius: 2px; flex-shrink: 0;
+  transition: all 0.5s;
+}
+
+.gif-wrap {
+  position: relative; width: 100%; background: #000;
+  min-height: 220px; display: flex;
+  align-items: center; justify-content: center; overflow: hidden;
+}
+.gif-wrap img, .gif-wrap video {
+  width: 100%; height: auto; display: block;
+}
+
+.card-comment {
+  padding: 0.7rem 1.2rem;
+  border-top: 1px solid var(--border);
+  transition: border-color 0.5s;
+}
+.card-comment p {
+  font-size: var(--sz-body); font-weight: var(--w-comment);
+  font-style: italic; line-height: 1.75; color: var(--muted);
+  transition: color 0.5s;
+}
+
+.dot { text-align: center; padding: 0.15rem 0; color: var(--border); font-size: 0.9rem; margin-bottom: 0.3rem; }
+
+/* ── PLACEHOLDER ────────────────────────────────────────── */
+.placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.8rem;
+  background: var(--surface); transition: background 0.5s;
+}
+.ph-ring {
+  width: 44px; height: 44px; border: 1px solid var(--border);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.5s;
+}
+.ph-ring svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 1.2; transition: stroke 0.5s; }
+.ph-text { font-size: 9px; font-weight: var(--w-body); color: var(--muted); letter-spacing: 0.1em; text-align: center; line-height: 2; transition: color 0.5s; }
+
+/* ══════════════════════════════════════════════════════════
+   SLIDER DE MAPAS
+   ══════════════════════════════════════════════════════════ */
+#mapas { padding-bottom: 4rem; }
+
+.mapas-header {
+  max-width: 900px; margin: 0 auto;
+  padding: 4rem 2.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: 0;
+  transition: border-color 0.5s;
+}
+.mapas-header h2 {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 300; color: var(--text); transition: color 0.5s;
+}
+.mapas-header h2 em { font-style: italic; color: var(--accent); }
+.mapas-intro {
+  max-width: 900px; margin: 0 auto;
+  padding: 1.5rem 2.5rem 0;
+  font-size: var(--sz-body); font-weight: var(--w-comment);
+  font-style: italic; line-height: 1.85; color: var(--muted);
+  transition: color 0.5s;
+}
+
+.slider-outer { position: relative; margin-top: 2rem; padding-bottom: 2.5rem; }
+
+.slider-track {
+  display: flex; overflow-x: scroll;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; cursor: grab;
+}
+.slider-track::-webkit-scrollbar { display: none; }
+.slider-track.grabbing { cursor: grabbing; }
+
+.slide {
+  flex: 0 0 100%; scroll-snap-align: start;
+  position: relative; height: clamp(320px, 52vw, 580px);
+  overflow: hidden; background: #080808;
+}
+.slide img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.6s ease;
+}
+.slide:hover img { transform: scale(1.01); }
+
+.slide-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 55%, transparent 100%);
+  padding: 2.5rem 2.5rem 1.8rem;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+}
+.slide-text { flex: 1; }
+.slide-num {
+  font-size: 9px; font-weight: var(--w-body);
+  letter-spacing: 0.2em; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 0.3rem; display: block;
+  transition: color 0.5s;
+}
+.slide-title {
+  font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: var(--w-title);
+  color: #fff; line-height: 1.2; margin-bottom: 0.4rem;
+}
+.slide-desc {
+  font-size: clamp(0.75rem, 1.4vw, 0.88rem); font-weight: var(--w-comment);
+  font-style: italic; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 500px;
+}
+.slide-index {
+  font-size: 9px; font-weight: var(--w-body);
+  color: rgba(255,255,255,0.3); letter-spacing: 0.08em;
+  flex-shrink: 0; align-self: flex-end;
+}
+
+.slider-arrows {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 100%; display: flex; justify-content: space-between;
+  padding: 0 1rem; pointer-events: none; z-index: 10;
+}
+.arrow-btn {
+  pointer-events: all; width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  color: rgba(255,255,255,0.7); font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.arrow-btn:hover { border-color: #fff; color: #fff; }
+
+.slider-dots {
+  display: flex; justify-content: center; align-items: center;
+  gap: 0.5rem; padding: 1rem 0 0.5rem;
+}
+.slider-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--border); cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: none; padding: 0;
+}
+.slider-dot.active { background: var(--accent); transform: scale(1.4); }
+
+/* ══════════════════════════════════════════════════════════
+   9-GRID PYTHON
+   ══════════════════════════════════════════════════════════ */
+.grid-9 {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 3px; cursor: pointer;
+}
+.grid-cell {
+  position: relative; aspect-ratio: 1;
+  overflow: hidden; background: #000;
+}
+.grid-cell img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s ease, opacity 0.3s;
+}
+.grid-cell:hover img { transform: scale(1.05); opacity: 0.8; }
+.grid-cell-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0); display: flex;
+  align-items: center; justify-content: center;
+  transition: background 0.3s;
+}
+.grid-cell:hover .grid-cell-overlay { background: rgba(0,0,0,0.25); }
+.grid-cell-num {
+  font-size: 9px; font-weight: var(--w-title);
+  color: rgba(255,255,255,0); letter-spacing: 0.1em;
+  transition: color 0.3s;
+}
+.grid-cell:hover .grid-cell-num { color: rgba(255,255,255,0.8); }
+
+/* Modal lightbox */
+.modal {
+  display: none; position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.95); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 2rem;
+}
+.modal.open { display: flex; }
+.modal-inner {
+  position: relative; max-width: 800px; width: 100%;
+}
+.modal-inner img {
+  width: 100%; height: auto; display: block;
+  max-height: 80vh; object-fit: contain;
+}
+.modal-close {
+  position: absolute; top: -2.5rem; right: 0;
+  font-size: 9px; font-weight: var(--w-title);
+  letter-spacing: 0.15em; color: rgba(255,255,255,0.5);
+  cursor: pointer; background: none; border: none; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: #fff; }
+.modal-caption {
+  margin-top: 0.8rem;
+  font-size: var(--sz-label); font-weight: var(--w-comment);
+  font-style: italic; color: rgba(255,255,255,0.4);
+  text-align: center; letter-spacing: 0.05em;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  max-width: 900px; margin: 0 auto; padding: 2rem 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem; transition: border-color 0.5s;
+}
+.footer-meta {
+  font-size: 9px; font-weight: var(--w-body);
+  color: var(--muted); letter-spacing: 0.1em; line-height: 2;
+  transition: color 0.5s;
+}
+.footer-title {
+  font-size: var(--sz-body); font-weight: var(--w-comment);
+  font-style: italic; color: var(--muted); transition: color 0.5s;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  header, .section, footer, .mapas-header, .mapas-intro { padding-left: 1.2rem; padding-right: 1.2rem; }
+  h1 { font-size: 2.2rem; }
+  .nav-brand { display: none; }
+  .card-tag { display: none; }
+  .slide-overlay { padding: 1.2rem; }
+  .grid-9 { grid-template-columns: repeat(3, 1fr); gap: 2px; }
+}
 </style>
 </head>
-<body>
+<body class="t-bw" id="body">
 
 <!-- ── NAV ── -->
 <nav>
   <a href="#inicio" class="nav-brand">Arquitectura explícita</a>
   <div class="nav-links">
-    <a href="#inicio">Inicio</a>
-    <a href="#tesis">Tesis</a>
-    <a href="#mapas">Mapas</a>
-    <a href="#clase">Clase</a>
+    <a href="#inicio" id="nl-inicio">Inicio</a>
+    <a href="#tesis" id="nl-tesis">Tesis</a>
+    <a href="#mapas" id="nl-mapas">Mapas</a>
+    <a href="#clase" id="nl-clase">Clase</a>
   </div>
 </nav>
 
 <!-- ── HEADER ── -->
-<header id="inicio">
+<header id="inicio" data-theme="t-bw">
   <div class="kicker">
     <span>Taller de proyectos</span>
     <span>Producción digital</span>
@@ -303,271 +501,253 @@
   </div>
 </header>
 
-<!-- ══════════════════════════════
+<!-- ══════════════════════════════════════════════════════════
      TESIS
-     ══════════════════════════════ -->
-<section class="section" id="tesis">
+     ══════════════════════════════════════════════════════════ -->
+<section class="section" id="tesis" data-theme="t-bw">
   <div class="section-header">
     <h2>Investigación &amp; <em>tesis</em></h2>
-    <span class="section-count">4 ejercicios</span>
+    <span class="section-count">5 ejercicios</span>
   </div>
-  <p class="section-intro">Experimentación computacional vinculada a la tesis — grafos espaciales y simulación de fuerzas aplicados al proceso de diseño.</p>
+  <p class="section-intro">Experimentación computacional vinculada a la tesis — grafos espaciales y simulación de fuerzas como instrumentos de diseño.</p>
 
+  <!-- 01 -->
   <div class="gif-card">
     <div class="card-header">
       <span class="card-num">01</span>
-      <span class="card-title">Llegando al equilibrio — iteraciones del grafo de fuerzas</span>
-      <span class="card-tag tesis">tesis · kangaroo</span>
+      <span class="card-title">Cascada de icosaedros</span>
+      <span class="card-tag">tesis · geometría</span>
     </div>
-    <div class="gif-wrap"><img src="https://i.imgur.com/unlj3r3.gif" alt="Iteraciones del grafo llegando al equilibrio"></div>
-    <div class="card-body"><p>Simulación de Kangaroo Physics corriendo en tiempo real. Los nodos del programa se reorganizan bajo la acción simultánea de los resortes del grafo pesado, los colisionadores y las fuerzas de ventilación, hasta converger en el estado de equilibrio.</p></div>
-  </div>
+    <div class="gif-wrap"><img src="https://i.imgur.com/oPuJH3Y.gif" alt="Cascada de icosaedros"></div>
+    <div class="card-comment"><p>Arquitectura explícita — conocimiento tácito. El conocimiento se disipa a veces mientras se comunica, pero sigue siendo cascada.</p></div>
+  </div><div class="dot">·</div>
 
-  <div class="dot">·</div>
-
+  <!-- 02 -->
   <div class="gif-card">
     <div class="card-header">
       <span class="card-num">02</span>
-      <span class="card-title">Grafos y sus propiedades topológicas según el nodo</span>
-      <span class="card-tag tesis">tesis · space syntax</span>
+      <span class="card-title">Llegando al equilibrio — iteraciones del grafo de fuerzas</span>
+      <span class="card-tag">tesis · kangaroo</span>
     </div>
-    <div class="gif-wrap"><img src="https://i.imgur.com/z7K4niY.gif" alt="Propiedades topológicas del grafo"></div>
-    <div class="card-body"><p>Visualización de las propiedades topológicas del grafo del programa: profundidad, integración y valor de control de cada nodo. El color y el tamaño codifican su posición estructural dentro del sistema de relaciones espaciales.</p></div>
-  </div>
+    <div class="gif-wrap"><img src="https://i.imgur.com/UKtCXkF.gif" alt="Iteraciones del grafo de fuerzas"></div>
+    <div class="card-comment"><p>Movimientos de Kangaroo — el grafo pesado del programa converge iterativamente hacia el estado de equilibrio. Cada iteración es una distribución posible.</p></div>
+  </div><div class="dot">·</div>
 
-  <div class="dot">·</div>
-
+  <!-- 03 -->
   <div class="gif-card">
     <div class="card-header">
       <span class="card-num">03</span>
-      <span class="card-title">Christopher Alexander — relación de patrones con sus propios patrones</span>
-      <span class="card-tag tesis">tesis · alexander</span>
+      <span class="card-title">Grafos y sus propiedades topológicas según el nodo</span>
+      <span class="card-tag">tesis · space syntax</span>
     </div>
-    <div class="gif-wrap"><img src="https://i.imgur.com/4tFZ2JP.gif" alt="A Pattern Language red de patrones"></div>
-    <div class="card-body"><p>La red de conexiones del <em>Pattern Language</em> de Alexander visualizada como grafo: 253 patrones conectados por relaciones de dependencia jerárquica. La base teórica del grafo pesado del script.</p></div>
-  </div>
+    <div class="gif-wrap"><img src="https://i.imgur.com/E0e1nx4.gif" alt="Propiedades topológicas del grafo"></div>
+    <div class="card-comment"><p>Cada nodo tiene diferente relación con los demás y sus profundidades son distintas según desde qué nodo empieces — la posición en el sistema define el significado.</p></div>
+  </div><div class="dot">·</div>
 
-  <div class="dot">·</div>
-
+  <!-- 04 -->
   <div class="gif-card">
     <div class="card-header">
       <span class="card-num">04</span>
+      <span class="card-title">Christopher Alexander — A Pattern Language</span>
+      <span class="card-tag">tesis · alexander</span>
+    </div>
+    <div class="gif-wrap"><img src="https://i.imgur.com/NPV4LyY.gif" alt="A Pattern Language relación de patrones"></div>
+    <div class="card-comment"><p>Relación de los patrones con sus propios patrones — 253 nodos conectados por dependencias jerárquicas. El lenguaje de patrones es, avant la lettre, un grafo pesado.</p></div>
+  </div><div class="dot">·</div>
+
+  <!-- 05 -->
+  <div class="gif-card">
+    <div class="card-header">
+      <span class="card-num">05</span>
       <span class="card-title">Agregación recursiva de módulos — espacios mínimos habitables</span>
-      <span class="card-tag tesis">tesis · wasp RA</span>
+      <span class="card-tag">tesis · wasp RA</span>
     </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Wasp RA"> -->
-      <div class="placeholder">
-        <div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
-        <p class="ph-text">GIF próximamente — Wasp RA</p>
-      </div>
-    </div>
-    <div class="card-body"><p>Agregación recursiva de módulos construidos a partir de espacios mínimos habitables mediante Wasp RA. El sistema ensambla componentes respetando reglas de conexión, generando configuraciones complejas desde una gramática modular simple.</p></div>
+    <div class="gif-wrap"><img src="https://i.imgur.com/uN6j4nw.gif" alt="Wasp RA agregación recursiva"></div>
+    <div class="card-comment"><p>Wasp RA — el sistema ensambla módulos construidos a partir de espacios mínimos habitables respetando reglas de conexión y compatibilidad.</p></div>
   </div>
 </section>
 
-<!-- ══════════════════════════════
+<!-- ══════════════════════════════════════════════════════════
      MAPAS — SLIDER
-     ══════════════════════════════ -->
-<section id="mapas">
-
+     ══════════════════════════════════════════════════════════ -->
+<section id="mapas" data-theme="t-maps">
   <div class="mapas-header">
     <h2>Análisis urbano — <em>mapas</em></h2>
-    <span class="section-count">6 mapas · desliza</span>
+    <span class="section-count">7 mapas · desliza</span>
   </div>
-
-  <p class="mapas-intro">
-    Cartografía de datos urbanos sobre Vialidad de la Barranca e Interlomas —
-    población, comercio, flujos y topología del sistema vial.
-    Arrastra o usa las flechas para navegar.
-  </p>
+  <p class="mapas-intro">Cartografía de datos urbanos sobre Vialidad de la Barranca e Interlomas — población, comercio, flujos y topología del sistema vial. B&amp;W con gradiente de rojo.</p>
 
   <div class="slider-outer">
-
-    <!-- Flechas -->
     <div class="slider-arrows">
-      <button class="arrow-btn" id="prev" aria-label="Anterior">&#8592;</button>
-      <button class="arrow-btn" id="next" aria-label="Siguiente">&#8594;</button>
+      <button class="arrow-btn" id="prev">&#8592;</button>
+      <button class="arrow-btn" id="next">&#8594;</button>
     </div>
 
-    <!-- Track -->
     <div class="slider-track" id="slider">
+      <div class="slide"><img src="https://i.imgur.com/qZIEGpd.gif" alt="Mapa población">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 01 · población</span><p class="slide-title">Densidad de población</p><p class="slide-desc">Polígonos AGEB coloreados por densidad de habitantes — INEGI Censo 2020.</p></div><span class="slide-index">01 / 07</span></div></div>
 
-      <!-- MAPA 1 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/qZIEGpd.gif" alt="Mapa de población">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 01 · población</span>
-            <p class="slide-title">Densidad de población</p>
-            <p class="slide-desc">Polígonos AGEB coloreados por densidad de habitantes según el Censo INEGI 2020. Los tonos más oscuros indican mayor concentración en el radio peatonal del terreno.</p>
-          </div>
-          <span class="slide-index">01 / 06</span>
-        </div>
-      </div>
+      <div class="slide"><img src="https://i.imgur.com/Wvh05Pz.gif" alt="Mapa calles">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 02 · vialidad</span><p class="slide-title">Calles e importancia vial</p><p class="slide-desc">Jerarquía vial coloreada por nivel de flujo. Vialidad de la Barranca como eje de alta integración.</p></div><span class="slide-index">02 / 07</span></div></div>
 
-      <!-- MAPA 2 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/Wvh05Pz.gif" alt="Mapa de calles e importancia">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 02 · vialidad</span>
-            <p class="slide-title">Jerarquía vial e importancia de calles</p>
-            <p class="slide-desc">Las calles se trazan con grosor y tono proporcionales a su nivel de flujo. Vialidad de la Barranca emerge como uno de los ejes de mayor integración del sistema.</p>
-          </div>
-          <span class="slide-index">02 / 06</span>
-        </div>
-      </div>
+      <div class="slide"><img src="https://i.imgur.com/JXIngxw.gif" alt="Topología manzanas">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 03 · topología</span><p class="slide-title">Relación topológica de manzanas</p><p class="slide-desc">Profundidad entre zonas residenciales y nodos comerciales — la distancia real no es geométrica.</p></div><span class="slide-index">03 / 07</span></div></div>
 
-      <!-- MAPA 3 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/JXIngxw.gif" alt="Relación topológica manzanas y comercio">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 03 · topología</span>
-            <p class="slide-title">Relación topológica de manzanas — población y comercio</p>
-            <p class="slide-desc">Profundidad topológica entre zonas residenciales y nodos comerciales. La distancia real no es geométrica — es relacional.</p>
-          </div>
-          <span class="slide-index">03 / 06</span>
-        </div>
-      </div>
+      <div class="slide"><img src="https://i.imgur.com/1kJQpBH.gif" alt="Comercios mapeados">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 04 · DENUE</span><p class="slide-title">Comercios mapeados</p><p class="slide-desc">Unidades económicas activas en radio de 1 km — DENUE 2023.</p></div><span class="slide-index">04 / 07</span></div></div>
 
-      <!-- MAPA 4 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/1kJQpBH.gif" alt="Comercios mapeados DENUE">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 04 · DENUE</span>
-            <p class="slide-title">Comercios mapeados</p>
-            <p class="slide-desc">Distribución georreferenciada de las unidades económicas activas en el radio de 1 km alrededor del terreno, a partir del DENUE 2023 del INEGI.</p>
-          </div>
-          <span class="slide-index">04 / 06</span>
-        </div>
-      </div>
+      <div class="slide"><img src="https://i.imgur.com/qOV1uAZ.gif" alt="Calles prioridad comercio">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 05 · prioridad</span><p class="slide-title">Calles con mayor prioridad de comercios</p><p class="slide-desc">Concentración de actividad comercial por metro lineal — demanda existente, oferta insuficiente.</p></div><span class="slide-index">05 / 07</span></div></div>
 
-      <!-- MAPA 5 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/qOV1uAZ.gif" alt="Calles con mayor prioridad de comercios">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 05 · prioridad</span>
-            <p class="slide-title">Calles con mayor prioridad de comercios</p>
-            <p class="slide-desc">Los ejes viales coloreados según concentración de actividad comercial por metro lineal de frente. Vialidad de la Barranca — demanda existente, oferta insuficiente.</p>
-          </div>
-          <span class="slide-index">05 / 06</span>
-        </div>
-      </div>
+      <div class="slide"><img src="https://i.imgur.com/JJBbeXO.gif" alt="Mapa síntesis">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 06 · síntesis</span><p class="slide-title">Mapa cargado de información</p><p class="slide-desc">Superposición de calles, comercios y población — el mapa que fundamenta la decisión del proyecto.</p></div><span class="slide-index">06 / 07</span></div></div>
 
-      <!-- MAPA 6 -->
-      <div class="slide">
-        <img src="https://i.imgur.com/JJBbeXO.gif" alt="Mapa síntesis">
-        <div class="slide-overlay">
-          <div class="slide-text">
-            <span class="slide-num">mapa 06 · síntesis</span>
-            <p class="slide-title">Mapa cargado de información — calles, comercios y población</p>
-            <p class="slide-desc">Superposición de las tres capas: densidad vial, distribución de comercios y concentración de población. El mapa que fundamenta la decisión de programa y localización.</p>
-          </div>
-          <span class="slide-index">06 / 06</span>
-        </div>
-      </div>
-
-    </div><!-- /slider-track -->
-
-    <!-- Dots -->
-    <div class="slider-dots" id="dots">
-      <button class="slider-dot active" data-index="0" aria-label="Mapa 1"></button>
-      <button class="slider-dot" data-index="1" aria-label="Mapa 2"></button>
-      <button class="slider-dot" data-index="2" aria-label="Mapa 3"></button>
-      <button class="slider-dot" data-index="3" aria-label="Mapa 4"></button>
-      <button class="slider-dot" data-index="4" aria-label="Mapa 5"></button>
-      <button class="slider-dot" data-index="5" aria-label="Mapa 6"></button>
+      <div class="slide"><img src="https://i.imgur.com/Mj2YRIa.gif" alt="Crecimiento densidades">
+        <div class="slide-overlay"><div class="slide-text"><span class="slide-num">mapa 07 · densidad</span><p class="slide-title">Cómo crecen las densidades</p><p class="slide-desc">GIF del proceso de acumulación de datos urbanos — la ciudad construyéndose como campo de información.</p></div><span class="slide-index">07 / 07</span></div></div>
     </div>
 
-  </div><!-- /slider-outer -->
+    <div class="slider-dots" id="dots">
+      <button class="slider-dot active" data-index="0"></button>
+      <button class="slider-dot" data-index="1"></button>
+      <button class="slider-dot" data-index="2"></button>
+      <button class="slider-dot" data-index="3"></button>
+      <button class="slider-dot" data-index="4"></button>
+      <button class="slider-dot" data-index="5"></button>
+      <button class="slider-dot" data-index="6"></button>
+    </div>
+  </div>
 </section>
 
-<!-- ══════════════════════════════
+<!-- ══════════════════════════════════════════════════════════
      CLASE
-     ══════════════════════════════ -->
-<section class="section" id="clase">
+     ══════════════════════════════════════════════════════════ -->
+<section class="section" id="clase" data-theme="t-bw">
   <div class="section-header">
     <h2>Producción de <em>clase</em></h2>
-    <span class="section-count">5 ejercicios</span>
+    <span class="section-count">20 ejercicios</span>
   </div>
-  <p class="section-intro">Ejercicios producidos durante el semestre — experimentación con geometría, física computacional y sistemas generativos.</p>
+  <p class="section-intro">Ejercicios del semestre — geometría, simulación física, ruido Perlin y fórmulas matemáticas en movimiento.</p>
 
-  <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">C·01</span>
-      <span class="card-title">Cascada de icosaedros</span>
-      <span class="card-tag clase">clase · geometría</span>
-    </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Cascada de icosaedros"> -->
-      <div class="placeholder"><div class="ph-ring"><svg viewBox="0 0 24 24"><polygon points="12 2 22 20 2 20"/></svg></div><p class="ph-text">GIF próximamente</p></div>
-    </div>
-    <div class="card-body"><p>Ejercicio de geometría computacional — cascada de icosaedros generada mediante lógica paramétrica.</p></div>
-  </div>
+  <!-- ── MACETAS ── -->
+  <div class="subgroup" data-theme="t-bw">
+    <p class="subgroup-label">Macetas</p>
 
-  <div class="dot">·</div>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·01</span><span class="card-title">Top View</span><span class="card-tag">macetas · B&amp;W</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/AX7csEl.gif" alt="Macetas top view"></div>
+      <div class="card-comment"><p>Ejercicio para creación de macetas — vista superior.</p></div>
+    </div><div class="dot">·</div>
 
-  <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">C·02</span>
-      <span class="card-title">Robot — ejercicio 1</span>
-      <span class="card-tag clase">clase · simulación</span>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·02</span><span class="card-title">Iteraciones</span><span class="card-tag">macetas · B&amp;W</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/9Sr4AVt.gif" alt="Macetas iteraciones"></div>
+      <div class="card-comment"><p>Iteraciones del proceso de creación de macetas.</p></div>
+    </div><div class="dot">·</div>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·03</span><span class="card-title">Side View — Turning</span><span class="card-tag">macetas · B&amp;W</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/3vPGCKe.gif" alt="Macetas side view"></div>
+      <div class="card-comment"><p>Vista lateral con rotación — la forma vista desde todos los ángulos.</p></div>
     </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Robot 1"> -->
-      <div class="placeholder"><div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><p class="ph-text">GIF próximamente</p></div>
-    </div>
-    <div class="card-body"><p>Primer ejercicio de simulación robótica en entorno computacional paramétrico.</p></div>
   </div>
 
-  <div class="dot">·</div>
-
-  <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">C·03</span>
-      <span class="card-title">Robot — ejercicio 2</span>
-      <span class="card-tag clase">clase · simulación</span>
+  <!-- ── PERLIN NEGRO/BLANCO ── -->
+  <div class="subgroup" data-theme="t-bw">
+    <p class="subgroup-label">Perlin — negro &amp; blanco</p>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·04</span><span class="card-title">Perlin 1</span><span class="card-tag">perlin · negro/blanco</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/eij3OB4.gif" alt="Perlin 1"></div>
+      <div class="card-comment"><p>Ruido Perlin — geometría orgánica generada mediante funciones de ruido continuo.</p></div>
     </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Robot 2"> -->
-      <div class="placeholder"><div class="ph-ring"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div><p class="ph-text">GIF próximamente</p></div>
-    </div>
-    <div class="card-body"><p>Segunda iteración del ejercicio de simulación robótica.</p></div>
   </div>
 
-  <div class="dot">·</div>
+  <!-- ── PERLIN HACKER ── -->
+  <div class="subgroup" data-theme="t-hacker">
+    <p class="subgroup-label">Perlin — hacker</p>
 
-  <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">C·04</span>
-      <span class="card-title">Perlina — ejercicio 1</span>
-      <span class="card-tag clase">clase · ruido</span>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·05</span><span class="card-title">Perlin 2</span><span class="card-tag">perlin · verde</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/8JZktz4.gif" alt="Perlin 2 verde hacker"></div>
+      <div class="card-comment"><p>Negro con verde — estilo hacker. El ruido como código.</p></div>
+    </div><div class="dot">·</div>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·06</span><span class="card-title">Perlin 3</span><span class="card-tag">perlin · verde</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/u8n3Hhc.gif" alt="Perlin 3 verde hacker"></div>
+      <div class="card-comment"><p>Segunda variación en verde — la forma como sistema de información.</p></div>
     </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Perlina 1"> -->
-      <div class="placeholder"><div class="ph-ring"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12 Q12 6 16 12 Q12 18 8 12"/></svg></div><p class="ph-text">GIF próximamente</p></div>
-    </div>
-    <div class="card-body"><p>Ejercicio con ruido Perlin aplicado a geometría — generación de formas orgánicas mediante funciones de ruido continuo.</p></div>
   </div>
 
-  <div class="dot">·</div>
+  <!-- ── PERLIN ROSA ── -->
+  <div class="subgroup" data-theme="t-rosa">
+    <p class="subgroup-label">Perlin — rosa &amp; crema</p>
 
-  <div class="gif-card">
-    <div class="card-header">
-      <span class="card-num">C·05</span>
-      <span class="card-title">Perlina explotado — ejercicio 2</span>
-      <span class="card-tag clase">clase · ruido</span>
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·07</span><span class="card-title">Perlin 7</span><span class="card-tag">perlin · rosa</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/RE0rRH1.gif" alt="Perlin 7 rosa crema"></div>
+      <div class="card-comment"><p>Rosa con crema — el mismo algoritmo, otra sensación.</p></div>
+    </div><div class="dot">·</div>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·08</span><span class="card-title">Perlin 8</span><span class="card-tag">perlin · rosa</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/UVp0Es4.gif" alt="Perlin 8 rosa crema"></div>
+      <div class="card-comment"><p>Variación rosa — sutileza como decisión formal.</p></div>
     </div>
-    <div class="gif-wrap">
-      <!-- <img src="URL_DE_TU_GIF" alt="Perlina 2"> -->
-      <div class="placeholder"><div class="ph-ring"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12 Q12 6 16 12 Q12 18 8 12"/></svg></div><p class="ph-text">GIF próximamente</p></div>
-    </div>
-    <div class="card-body"><p>Versión explotada del ejercicio Perlin — el volumen se descompone en sus capas generativas, mostrando la lógica interna del sistema.</p></div>
   </div>
+
+  <!-- ── PERLIN ROJO / FÉLIX CANDELA ── -->
+  <div class="subgroup" data-theme="t-rojo">
+    <p class="subgroup-label">Perlin con Félix Candela — rojo</p>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·09</span><span class="card-title">Perlin con Félix Candela</span><span class="card-tag">perlin · rojo/crema</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/HSIJf1S.gif" alt="Perlin Félix Candela rojo"></div>
+      <div class="card-comment"><p>Rojo con crema — la forma estructural de Candela procesada como campo de ruido.</p></div>
+    </div>
+  </div>
+
+  <!-- ── JEROGLÍFICOS ── -->
+  <div class="subgroup" data-theme="t-bw">
+    <p class="subgroup-label">Grouping de líneas — jeroglíficos</p>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·10</span><span class="card-title">Grouping de líneas jeroglíficos</span><span class="card-tag">clase · negro/crema</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/bloxw6L.gif" alt="Grouping líneas jeroglíficos"></div>
+      <div class="card-comment"><p>Negro con crema — grouping de líneas que construyen un sistema de signos.</p></div>
+    </div>
+  </div>
+
+  <!-- ── PERLIN EXPLOSIONADO ── -->
+  <div class="subgroup" data-theme="t-cold">
+    <p class="subgroup-label">Perlin explosionado — gradiente de temperatura</p>
+
+    <div class="gif-card">
+      <div class="card-header"><span class="card-num">C·11</span><span class="card-title">Perlin 8 Explosionado</span><span class="card-tag">perlin · naranja/azul</span></div>
+      <div class="gif-wrap"><img src="https://i.imgur.com/nSg74i1.gif" alt="Perlin 8 explosionado gradiente temperatura"></div>
+      <div class="card-comment"><p>Blanco con gradiente de temperatura naranja y azul — la explosión como método de lectura interna.</p></div>
+    </div>
+  </div>
+
+  <!-- ── PYTHON TRIPPY 9-GRID ── -->
+  <div class="subgroup" data-theme="t-trippy">
+    <p class="subgroup-label">Python — fórmulas matemáticas en movimiento</p>
+    <p class="section-intro" style="margin-bottom:1rem;">Líneas moviéndose circularmente con colores amarillo, rojo, naranja y rosa sobre fondo negro — fórmulas matemáticas que se mueven en el espacio. Toca cualquiera para abrirla.</p>
+
+    <div class="gif-card" style="overflow:visible; background: transparent; border:none;">
+      <div class="grid-9" id="grid9">
+        <div class="grid-cell" data-src="https://i.imgur.com/yjVJtf0.gif" data-caption="Python 01 — fórmula matemática en movimiento"><img src="https://i.imgur.com/yjVJtf0.gif" alt="Python 1" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">01</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/zJRcsXC.gif" data-caption="Python 02 — fórmula matemática en movimiento"><img src="https://i.imgur.com/zJRcsXC.gif" alt="Python 2" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">02</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/21UtfVx.gif" data-caption="Python 03 — fórmula matemática en movimiento"><img src="https://i.imgur.com/21UtfVx.gif" alt="Python 3" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">03</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/18x73qF.gif" data-caption="Python 04 — fórmula matemática en movimiento"><img src="https://i.imgur.com/18x73qF.gif" alt="Python 4" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">04</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/H3PTBmb.gif" data-caption="Python 05 — fórmula matemática en movimiento"><img src="https://i.imgur.com/H3PTBmb.gif" alt="Python 5" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">05</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/gTHoyIY.gif" data-caption="Python 06 — fórmula matemática en movimiento"><img src="https://i.imgur.com/gTHoyIY.gif" alt="Python 6" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">06</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/XqSYXBq.gif" data-caption="Python 07 — fórmula matemática en movimiento"><img src="https://i.imgur.com/XqSYXBq.gif" alt="Python 7" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">07</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/ULwcMz7.gif" data-caption="Python 08 — fórmula matemática en movimiento"><img src="https://i.imgur.com/ULwcMz7.gif" alt="Python 8" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">08</span></div></div>
+        <div class="grid-cell" data-src="https://i.imgur.com/8mQKFSP.gif" data-caption="Python 09 — fórmula matemática en movimiento"><img src="https://i.imgur.com/8mQKFSP.gif" alt="Python 9" loading="lazy"><div class="grid-cell-overlay"><span class="grid-cell-num">09</span></div></div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <!-- ── FOOTER ── -->
@@ -580,73 +760,99 @@
   <div class="footer-title">Arquitectura explícita</div>
 </footer>
 
+<!-- ── MODAL LIGHTBOX ── -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <button class="modal-close" id="modal-close">Cerrar ×</button>
+    <img src="" alt="" id="modal-img">
+    <p class="modal-caption" id="modal-caption"></p>
+  </div>
+</div>
+
 <script>
-  // ── NAV HIGHLIGHT ON SCROLL ──
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const targets = ['inicio','tesis','mapas','clase'].map(id => document.getElementById(id));
+// ── THEME ENGINE ─────────────────────────────────────────────
+const body      = document.getElementById('body');
+const sections  = document.querySelectorAll('[data-theme]');
+const subgroups = document.querySelectorAll('.subgroup[data-theme]');
+const navLinks  = document.querySelectorAll('.nav-links a');
+const allThemed = document.querySelectorAll('[data-theme]');
 
-  const navObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        navLinks.forEach(l => l.classList.remove('active'));
-        const a = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
-        if (a) a.classList.add('active');
-      }
-    });
-  }, { threshold: 0.25 });
-  targets.forEach(t => t && navObserver.observe(t));
-
-  // ── SLIDER ──
-  const track = document.getElementById('slider');
-  const dots  = document.querySelectorAll('.slider-dot');
-  const prev  = document.getElementById('prev');
-  const next  = document.getElementById('next');
-  let current = 0;
-  const total = dots.length;
-
-  function goTo(index) {
-    current = (index + total) % total;
-    track.scrollTo({ left: current * track.clientWidth, behavior: 'smooth' });
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-  }
-
-  prev.addEventListener('click', () => goTo(current - 1));
-  next.addEventListener('click', () => goTo(current + 1));
-  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.index)));
-
-  // Sync dots on manual scroll / swipe
-  let scrollTimer;
-  track.addEventListener('scroll', () => {
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => {
-      const index = Math.round(track.scrollLeft / track.clientWidth);
-      if (index !== current) {
-        current = index;
-        dots.forEach((d, i) => d.classList.toggle('active', i === current));
-      }
-    }, 80);
+const themeObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const theme = e.target.dataset.theme;
+      if (theme) body.className = theme;
+      // Nav highlight
+      const id = e.target.closest('section, header')?.id || e.target.id;
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
   });
+}, { threshold: 0.35 });
 
-  // Keyboard arrows when hovering slider
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  goTo(current - 1);
-    if (e.key === 'ArrowRight') goTo(current + 1);
-  });
+allThemed.forEach(el => themeObs.observe(el));
 
-  // Drag to scroll (desktop)
-  let isDown = false, startX, startScroll;
-  track.addEventListener('mousedown', e => {
-    isDown = true; track.classList.add('grabbing');
-    startX = e.pageX - track.offsetLeft;
-    startScroll = track.scrollLeft;
+// ── SLIDER ───────────────────────────────────────────────────
+const track  = document.getElementById('slider');
+const dots   = document.querySelectorAll('.slider-dot');
+const prev   = document.getElementById('prev');
+const next   = document.getElementById('next');
+let cur = 0, total = dots.length;
+
+function goTo(i) {
+  cur = (i + total) % total;
+  track.scrollTo({ left: cur * track.clientWidth, behavior: 'smooth' });
+  dots.forEach((d, idx) => d.classList.toggle('active', idx === cur));
+}
+
+prev.addEventListener('click', () => goTo(cur - 1));
+next.addEventListener('click', () => goTo(cur + 1));
+dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.index)));
+
+let st;
+track.addEventListener('scroll', () => {
+  clearTimeout(st);
+  st = setTimeout(() => {
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    if (i !== cur) { cur = i; dots.forEach((d,idx) => d.classList.toggle('active', idx === cur)); }
+  }, 80);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft')  goTo(cur - 1);
+  if (e.key === 'ArrowRight') goTo(cur + 1);
+});
+
+let isDown = false, startX, startScroll;
+track.addEventListener('mousedown', e => { isDown = true; track.classList.add('grabbing'); startX = e.pageX - track.offsetLeft; startScroll = track.scrollLeft; });
+track.addEventListener('mouseleave', () => { isDown = false; track.classList.remove('grabbing'); });
+track.addEventListener('mouseup',    () => { isDown = false; track.classList.remove('grabbing'); });
+track.addEventListener('mousemove',  e => { if (!isDown) return; e.preventDefault(); track.scrollLeft = startScroll - (e.pageX - track.offsetLeft - startX); });
+
+// ── MODAL / 9-GRID ───────────────────────────────────────────
+const modal       = document.getElementById('modal');
+const modalImg    = document.getElementById('modal-img');
+const modalCap    = document.getElementById('modal-caption');
+const modalClose  = document.getElementById('modal-close');
+
+document.querySelectorAll('.grid-cell').forEach(cell => {
+  cell.addEventListener('click', () => {
+    modalImg.src = cell.dataset.src;
+    modalCap.textContent = cell.dataset.caption;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
   });
-  track.addEventListener('mouseleave', () => { isDown = false; track.classList.remove('grabbing'); });
-  track.addEventListener('mouseup',    () => { isDown = false; track.classList.remove('grabbing'); });
-  track.addEventListener('mousemove',  e => {
-    if (!isDown) return;
-    e.preventDefault();
-    track.scrollLeft = startScroll - (e.pageX - track.offsetLeft - startX);
-  });
+});
+
+function closeModal() {
+  modal.classList.remove('open');
+  modalImg.src = '';
+  document.body.style.overflow = '';
+}
+modalClose.addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 
 </body>
